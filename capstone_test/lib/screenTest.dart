@@ -3,34 +3,46 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(const MaterialApp(
     title: 'Navigation Basics',
-    home: FirstRoute(),
+    home: WelcomePage(),
+    debugShowCheckedModeBanner: false,
   ));
 }
 
-class FirstRoute extends StatelessWidget {
-  const FirstRoute({super.key});
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('Welcome'),
       ),
       body: Center(
           child: Column(
         children: <Widget>[
-          Text('Widget 1'),
+          SizedBox(height: 20),
+          const Image(
+            image: AssetImage('images/logo.png'),
+            height: 130,
+          ),
+          SizedBox(height: 40),
           ElevatedButton(
-            child: const Text('You have ADHD'),
+            child: const Text('Create Account'),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SecondRoute()),
+                MaterialPageRoute(builder: (context) => const CreateAccount()),
               );
             },
           ),
-          Image(
-            image: AssetImage('images/logo.png'),
+          ElevatedButton(
+            child: const Text('Log In'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LogIn()),
+              );
+            },
           )
         ],
       )),
@@ -38,21 +50,42 @@ class FirstRoute extends StatelessWidget {
   }
 }
 
-class SecondRoute extends StatelessWidget {
-  const SecondRoute({super.key});
+class CreateAccount extends StatelessWidget {
+  const CreateAccount({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tasks'),
+        title: const Text('Create Account'),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('You still have ADHD'),
+          child: const Text('Return Home'),
+        ),
+      ),
+    );
+  }
+}
+
+class LogIn extends StatelessWidget {
+  const LogIn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('LogIn'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go Back'),
         ),
       ),
     );
