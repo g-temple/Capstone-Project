@@ -17,16 +17,23 @@ class FirstRoute extends StatelessWidget {
         title: const Text('Home'),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text('You have ADHD'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SecondRoute()),
-            );
-          },
-        ),
-      ),
+          child: Column(
+        children: <Widget>[
+          Text('Widget 1'),
+          ElevatedButton(
+            child: const Text('You have ADHD'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SecondRoute()),
+              );
+            },
+          ),
+          Image(
+            image: AssetImage('images/logo.png'),
+          )
+        ],
+      )),
     );
   }
 }
