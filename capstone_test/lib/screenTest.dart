@@ -50,8 +50,38 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-class CreateAccount extends StatelessWidget {
-  const CreateAccount({super.key});
+class CreateAccount extends StatefulWidget {
+  const CreateAccount({Key? key}) : super(key: key);
+
+  @override
+  CreateAccountState createState() => CreateAccountState();
+}
+
+class CreateAccountState extends State<CreateAccount> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController.addListener(_checkInput);
+    passwordController.addListener(_checkInput);
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _checkInput() {
+    setState(() {
+      isButtonEnabled = usernameController.text.isNotEmpty &&
+          passwordController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +90,45 @@ class CreateAccount extends StatelessWidget {
         title: const Text('Create Account'),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Return Home'),
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 20),
+            TextFormField(
+              controller: usernameController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.person),
+                hintText: 'Please create a username',
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: passwordController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.key),
+                hintText: 'Please create a password',
+                // TODO need to do lots of logic to ensure strong passwords
+              ),
+            ),
+            SizedBox(height: 60),
+            ElevatedButton(
+              onPressed: isButtonEnabled ? createAccount : null,
+              child: Text('Create Account'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isButtonEnabled
+                    ? Color.fromARGB(255, 198, 97, 253)
+                    : Colors.grey[400],
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void createAccount() {
+    String username = usernameController.text;
+    String password = passwordController.text;
+    // need to implement SQLite here so users can actually create an account and "log in"
   }
 }
 
