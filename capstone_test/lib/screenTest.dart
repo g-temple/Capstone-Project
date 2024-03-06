@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:capstone_test/db_test.dart' as db;
 
 void main() {
+  db.main(); // i think this will make the database accessible from our app
   runApp(const MaterialApp(
     title: 'Navigation Basics',
     home: WelcomePage(),
@@ -115,7 +117,7 @@ class CreateAccountState extends State<CreateAccount> {
               child: Text('Create Account'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled
-                    ? Color.fromARGB(255, 198, 97, 253)
+                    ? Color.fromARGB(255, 192, 129, 226)
                     : Colors.grey[400],
               ),
             ),
