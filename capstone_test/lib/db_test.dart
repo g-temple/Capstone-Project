@@ -42,7 +42,7 @@ void main() async {
     );
   }
 
-  // A method that retrieves all the dogs from the dogs table.
+  // A method that retrieves all the dogs from the users table.
   Future<List<User>> users() async {
     // Get a reference to the database.
     final db = await database;
@@ -70,7 +70,7 @@ void main() async {
     ];
   }
 
-  Future<void> updateDog(User user) async {
+  Future<void> updateUser(User user) async {
     // Get a reference to the database.
     final db = await database;
 

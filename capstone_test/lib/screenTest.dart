@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:capstone_test/db_test.dart' as db;
+import 'package:capstone_test/db.dart' as db;
 
-void main() {
-  db.main(); // i think this will make the database accessible from our app
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await db.DatabaseProvider
+      .initializeDatabase(); // i think this initializes the database
   runApp(const MaterialApp(
     title: 'Navigation Basics',
     home: WelcomePage(),
