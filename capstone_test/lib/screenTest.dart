@@ -64,6 +64,9 @@ class CreateAccount extends StatefulWidget {
 class CreateAccountState extends State<CreateAccount> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final pConfirmController = TextEditingController();
+  final emailController = TextEditingController();
+  final eConfirmController = TextEditingController();
   bool isButtonEnabled = false;
 
   @override
@@ -71,24 +74,40 @@ class CreateAccountState extends State<CreateAccount> {
     super.initState();
     usernameController.addListener(_checkInput);
     passwordController.addListener(_checkInput);
+    pConfirmController.addListener(_checkInput);
+    emailController.addListener(_checkInput);
+    eConfirmController.addListener(_checkInput);
   }
 
   @override
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
+    pConfirmController.dispose();
+    emailController.dispose();
+    eConfirmController.dispose();
     super.dispose();
   }
 
   void _checkInput() {
     setState(() {
       isButtonEnabled = usernameController.text.isNotEmpty &&
-          passwordController.text.isNotEmpty;
+          passwordController.text.isNotEmpty &&
+          pConfirmController.text.isNotEmpty &&
+          emailController.text.isNotEmpty &&
+          eConfirmController.text.isNotEmpty &&
+          passwordController.text == pConfirmController.text &&
+          // literal witchcraft but it works
+          // function determines if a password is strong or not using regex
+          RegExp(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$')
+              .hasMatch(passwordController.text) &&
+          emailController.text == eConfirmController.text;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isChecked = false;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Account'),
@@ -96,6 +115,7 @@ class CreateAccountState extends State<CreateAccount> {
       body: Center(
         child: Column(
           children: <Widget>[
+            // username box
             SizedBox(height: 20),
             TextFormField(
               controller: usernameController,
@@ -104,6 +124,7 @@ class CreateAccountState extends State<CreateAccount> {
                 hintText: 'Please create a username',
               ),
             ),
+            // password
             SizedBox(height: 20),
             TextFormField(
               controller: passwordController,
@@ -113,6 +134,35 @@ class CreateAccountState extends State<CreateAccount> {
                 // TODO need to do lots of logic to ensure strong passwords
               ),
             ),
+            //confirm password
+            SizedBox(height: 20),
+            TextFormField(
+              controller: pConfirmController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.remove_red_eye),
+                hintText: 'Please confirm your password',
+                // TODO need to do lots of logic to ensure strong passwords
+              ),
+            ),
+            //email
+            SizedBox(height: 20),
+            TextFormField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.email),
+                hintText: 'Please enter your email',
+              ),
+            ),
+            //confirm email
+            SizedBox(height: 20),
+            TextFormField(
+              controller: eConfirmController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.email_outlined),
+                hintText: 'Please confirm your email',
+              ),
+            ),
+// need to implement a checkbox
             SizedBox(height: 60),
             ElevatedButton(
               onPressed: isButtonEnabled ? createAccount : null,
@@ -132,6 +182,7 @@ class CreateAccountState extends State<CreateAccount> {
   void createAccount() {
     String username = usernameController.text;
     String password = passwordController.text;
+    String email = emailController.text;
     // need to implement SQLite here so users can actually create an account and "log in"
   }
 }

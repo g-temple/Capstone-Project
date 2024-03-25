@@ -10,7 +10,7 @@ class DatabaseProvider {
   static Future<void> initializeDatabase() async {
     WidgetsFlutterBinding.ensureInitialized();
     database = await openDatabase(
-      join(await getDatabasesPath(), 'doggie_database.db'),
+      join(await getDatabasesPath(), 'users_database.db'),
       onCreate: (db, version) {
         return db.execute(
           'CREATE TABLE users(userid INTEGER PRIMARY KEY, username TEXT, age INTEGER, password TEXT, level INTEGER, accuracy REAL)',
