@@ -1,3 +1,5 @@
+import 'dart:ffi';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:capstone_test/db.dart' as db;
 
@@ -66,7 +68,7 @@ class CreateAccountState extends State<CreateAccount> {
   final passwordController = TextEditingController();
   final pConfirmController = TextEditingController();
   final emailController = TextEditingController();
-  final eConfirmController = TextEditingController();
+  final ageController = TextEditingController();
   bool isButtonEnabled = false;
 
   @override
@@ -76,7 +78,7 @@ class CreateAccountState extends State<CreateAccount> {
     passwordController.addListener(_checkInput);
     pConfirmController.addListener(_checkInput);
     emailController.addListener(_checkInput);
-    eConfirmController.addListener(_checkInput);
+    ageController.addListener(_checkInput);
   }
 
   @override
@@ -85,7 +87,7 @@ class CreateAccountState extends State<CreateAccount> {
     passwordController.dispose();
     pConfirmController.dispose();
     emailController.dispose();
-    eConfirmController.dispose();
+    ageController.dispose();
     super.dispose();
   }
 
@@ -95,13 +97,13 @@ class CreateAccountState extends State<CreateAccount> {
           passwordController.text.isNotEmpty &&
           pConfirmController.text.isNotEmpty &&
           emailController.text.isNotEmpty &&
-          eConfirmController.text.isNotEmpty &&
+          ageController.text.isNotEmpty &&
           passwordController.text == pConfirmController.text &&
           // literal witchcraft but it works
           // function determines if a password is strong or not using regex
           RegExp(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$')
-              .hasMatch(passwordController.text) &&
-          emailController.text == eConfirmController.text;
+              .hasMatch(passwordController.text);
+      print(isButtonEnabled);
     });
   }
 
@@ -153,15 +155,16 @@ class CreateAccountState extends State<CreateAccount> {
                 hintText: 'Please enter your email',
               ),
             ),
-            //confirm email
+            //age
             SizedBox(height: 20),
             TextFormField(
-              controller: eConfirmController,
+              controller: ageController,
               decoration: const InputDecoration(
-                icon: Icon(Icons.email_outlined),
-                hintText: 'Please confirm your email',
+                icon: Icon(Icons.numbers),
+                hintText: 'Please enter your age',
               ),
             ),
+
 // need to implement a checkbox
             SizedBox(height: 60),
             ElevatedButton(
@@ -183,6 +186,19 @@ class CreateAccountState extends State<CreateAccount> {
     String username = usernameController.text;
     String password = passwordController.text;
     String email = emailController.text;
+    int age = int.parse(ageController.text);
+
+    db.insertUser(db.User(
+        userid: 1,
+        age: age,
+        username: username,
+        password: password,
+        email: email,
+        level: 1,
+        accuracy: 1.0));
+
+    // userid, age, username, password, email, level, accuracy
+    //db.insertUser(User(,,username,password,email,0,1.0));
     // need to implement SQLite here so users can actually create an account and "log in"
   }
 }

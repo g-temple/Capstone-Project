@@ -12,8 +12,9 @@ class DatabaseProvider {
     database = await openDatabase(
       join(await getDatabasesPath(), 'users_database.db'),
       onCreate: (db, version) {
+        db.execute('DROP TABLE IF EXISTS users');
         return db.execute(
-          'CREATE TABLE users(userid INTEGER PRIMARY KEY, username TEXT, age INTEGER, password TEXT, level INTEGER, accuracy REAL)',
+          'CREATE TABLE users(userid INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
         );
       },
       version: 1,
@@ -43,17 +44,19 @@ Future<List<User>> users() async {
   return [
     for (final {
           'userid': userid,
-          'age': age,
           'username': username,
+          'age': age,
           'password': password,
           'level': level,
           'accuracy': accuracy,
+          'email': email,
         } in userMaps)
       User(
         userid: userid as int,
         age: age as int,
         username: username as String,
         password: password as String,
+        email: email as String,
         level: level as int,
         accuracy: accuracy as double,
       ),
@@ -86,6 +89,7 @@ class User {
   final int age;
   final String username;
   final String password;
+  final String email;
   final int level;
   final double accuracy;
 
@@ -94,6 +98,7 @@ class User {
     required this.age,
     required this.username,
     required this.password,
+    required this.email,
     required this.level,
     required this.accuracy,
   });
@@ -104,6 +109,7 @@ class User {
       'age': age,
       'username': username,
       'password': password,
+      'email': email,
       'level': level,
       'accuracy': accuracy,
     };
