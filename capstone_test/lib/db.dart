@@ -74,17 +74,15 @@ Future<void> updateUser(User user) async {
   );
 }
 
-bool checkPass(String username, String password) {
+Future<bool> checkPass(String username, String password) async {
   final Database db = DatabaseProvider.database;
 
-  final Future<List<Map<String, Object?>>> result = db.rawQuery(
+  final List<Map<String, dynamic>> result = await db.rawQuery(
     'SELECT userid FROM users WHERE username = ? AND password = ?',
     [username, password],
   );
 
-  print(result);
-
-  return true;
+  return result.isNotEmpty;
 }
 
 Future<void> deleteUser(int userid) async {

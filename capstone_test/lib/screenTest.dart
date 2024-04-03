@@ -103,13 +103,12 @@ class CreateAccountState extends State<CreateAccount> {
           // function determines if a password is strong or not using regex
           RegExp(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$')
               .hasMatch(passwordController.text);
-      print(isButtonEnabled);
+      //print(isButtonEnabled);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isChecked = false;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Account'),
@@ -203,8 +202,39 @@ class CreateAccountState extends State<CreateAccount> {
   }
 }
 
-class LogIn extends StatelessWidget {
-  const LogIn({super.key});
+class LogIn extends StatefulWidget {
+  const LogIn({Key? key}) : super(key: key);
+
+  @override
+  LogInState createState() => LogInState();
+}
+
+class LogInState extends State<LogIn> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool isValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController.addListener(_checkInput);
+    passwordController.addListener(_checkInput);
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _checkInput() async {
+    bool isValid =
+        await db.checkPass(usernameController.text, passwordController.text);
+    setState(() {
+      this.isValid = isValid;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,11 +247,13 @@ class LogIn extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20),
             TextFormField(
+              controller: usernameController,
               decoration: const InputDecoration(
                   icon: Icon(Icons.person), hintText: 'Enter Username'),
             ),
             SizedBox(height: 20),
             TextFormField(
+              controller: passwordController,
               decoration: const InputDecoration(
                   icon: Icon(Icons.key), hintText: 'Enter Password'),
             ),
@@ -229,13 +261,20 @@ class LogIn extends StatelessWidget {
             ElevatedButton(
               child: const Text('Log In'),
               onPressed: () {
-                //db.checkPass(username, password)
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                isValid
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      )
+                    : null;
               },
-            )
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isValid
+                    ? Color.fromARGB(255, 192, 129, 226)
+                    : Colors.grey[400],
+              ),
+            ),
           ],
         )));
   }
