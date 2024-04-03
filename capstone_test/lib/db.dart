@@ -17,7 +17,7 @@ class DatabaseProvider {
           'CREATE TABLE users(userid INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
         );
       },
-      version: 1,
+      version: 2,
     );
   }
 
@@ -72,6 +72,19 @@ Future<void> updateUser(User user) async {
     where: 'userid = ?',
     whereArgs: [user.userid],
   );
+}
+
+bool checkPass(String username, String password) {
+  final Database db = DatabaseProvider.database;
+
+  final Future<List<Map<String, Object?>>> result = db.rawQuery(
+    'SELECT userid FROM users WHERE username = ? AND password = ?',
+    [username, password],
+  );
+
+  print(result);
+
+  return true;
 }
 
 Future<void> deleteUser(int userid) async {

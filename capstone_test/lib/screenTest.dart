@@ -229,6 +229,7 @@ class LogIn extends StatelessWidget {
             ElevatedButton(
               child: const Text('Log In'),
               onPressed: () {
+                //db.checkPass(username, password)
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const HomePage()),
