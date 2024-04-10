@@ -15,7 +15,7 @@ class DatabaseProvider {
         db.execute('DROP TABLE IF EXISTS users');
         db.execute('DROP TABLE IF EXISTS reminders');
         db.execute(
-            'CREATE TABLE reminders(userid INTEGER FOREIGN KEY AUTOINCREMENT, reminderid INTEGER PRIMARY KEY, reminderTxt TEXT, dateSet TEXT, dateCompBy TEXT)');
+            'CREATE TABLE reminders(username TEXT FOREIGN KEY AUTOINCREMENT, reminderid INTEGER PRIMARY KEY, reminderTxt TEXT, dateSet TEXT, dateCompBy TEXT)');
         return db.execute(
           'CREATE TABLE users(username TEXT PRIMARY KEY, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
         );
@@ -37,6 +37,7 @@ Future<void> insertUser(User user) async {
     user.userMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
+  print(user.userMap());
 }
 
 Future<void> insertReminder(Reminder reminder) async {
@@ -86,10 +87,10 @@ Future<bool> checkPass(String username, String password) async {
   final Database db = DatabaseProvider.database;
 
   final List<Map<String, dynamic>> result = await db.rawQuery(
-    'SELECT userid FROM users WHERE username = ? AND password = ?',
+    'SELECT * FROM users WHERE username = ? AND password = ?',
     [username, password],
   );
-
+  print(result);
   return result.isNotEmpty;
 }
 
@@ -140,8 +141,8 @@ class User {
 
   Map<String, Object?> userMap() {
     return {
-      'age': age,
       'username': username,
+      'age': age,
       'password': password,
       'email': email,
       'level': level,
@@ -156,14 +157,14 @@ class User {
 }
 
 class Reminder {
-  final int userId;
+  final String username;
   final int reminderId;
   final String reminderText;
   final String dateSet;
   final String dateCompletedBy;
 
   Reminder({
-    required this.userId,
+    required this.username,
     required this.reminderId,
     required this.reminderText,
     required this.dateSet,
@@ -172,7 +173,7 @@ class Reminder {
 
   Map<String, Object?> reminderMap() {
     return {
-      'userId': userId,
+      'userId': username,
       'reminderId': reminderId,
       'reminderTxt': reminderText,
       'dateSet': dateSet,
@@ -182,6 +183,6 @@ class Reminder {
 
   @override
   String toString() {
-    return 'Reminder{userId: $userId, reminderId: $reminderId, reminderText: $reminderText, dateSet: $dateSet, dateCompletedBy: $dateCompletedBy}';
+    return 'Reminder{username: $username, reminderId: $reminderId, reminderText: $reminderText, dateSet: $dateSet, dateCompletedBy: $dateCompletedBy}';
   }
 }

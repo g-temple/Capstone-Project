@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:capstone_test/db.dart' as db;
 
 // global variable to reference for creating and updating tasks
-int gUserId = 0;
+String gUsername = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -194,9 +194,7 @@ class CreateAccountState extends State<CreateAccount> {
             ),
             SizedBox(height: 60),
             ElevatedButton(
-              onPressed: isButtonEnabled
-                  ? () => {createAccount, Navigator.pop(context)}
-                  : null,
+              onPressed: isButtonEnabled ? createAccount : null,
               child: Text('Create Account'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled
@@ -223,6 +221,8 @@ class CreateAccountState extends State<CreateAccount> {
         email: email,
         level: 1,
         accuracy: 1.0));
+
+    Navigator.pop(context);
   }
 }
 
@@ -288,11 +288,14 @@ class LogInState extends State<LogIn> {
                 // need a function to get a userId
                 //gUserId =
                 isValid
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()),
-                      )
+                    ? () => {
+                          gUsername = usernameController.text,
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          )
+                        }
                     : null;
               },
               style: ElevatedButton.styleFrom(
