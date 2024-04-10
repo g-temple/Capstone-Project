@@ -1,7 +1,11 @@
 import 'dart:ffi';
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:capstone_test/db.dart' as db;
+
+// global variable to reference for creating and updating tasks
+int gUserId = 0;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,6 +73,7 @@ class CreateAccountState extends State<CreateAccount> {
   final pConfirmController = TextEditingController();
   final emailController = TextEditingController();
   final ageController = TextEditingController();
+  String helpText = "";
   bool isButtonEnabled = false;
 
   @override
@@ -91,19 +96,36 @@ class CreateAccountState extends State<CreateAccount> {
     super.dispose();
   }
 
-  void _checkInput() {
+  void _checkInput() async {
+    bool uniqueUsername =
+        await db.checkIfUsernameExists(usernameController.text);
+
+    bool hasText = usernameController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty &&
+        pConfirmController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        ageController.text.isNotEmpty;
+
+    bool strongPass = RegExp(
+            r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$')
+        .hasMatch(passwordController.text);
+
+    bool pMatches = passwordController.text == pConfirmController.text;
+
     setState(() {
-      isButtonEnabled = usernameController.text.isNotEmpty &&
-          passwordController.text.isNotEmpty &&
-          pConfirmController.text.isNotEmpty &&
-          emailController.text.isNotEmpty &&
-          ageController.text.isNotEmpty &&
-          passwordController.text == pConfirmController.text &&
-          // literal witchcraft but it works
-          // function determines if a password is strong or not using regex
-          RegExp(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$')
-              .hasMatch(passwordController.text);
+      isButtonEnabled = hasText && strongPass && pMatches && uniqueUsername;
       //print(isButtonEnabled);
+      if (!hasText) {
+        helpText = "Please enter your information";
+      } else if (!strongPass) {
+        helpText = "Please make a stronger password";
+      } else if (!pMatches) {
+        helpText = "Passwords must match";
+      } else if (!uniqueUsername) {
+        helpText = "Please choose a different username";
+      } else {
+        helpText = "";
+      }
     });
   }
 
@@ -163,11 +185,18 @@ class CreateAccountState extends State<CreateAccount> {
                 hintText: 'Please enter your age',
               ),
             ),
-
-// need to implement a checkbox
+// Additional text widget to display static text
+            SizedBox(height: 20),
+            Text(
+              helpText,
+              style: TextStyle(
+                  fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
+            ),
             SizedBox(height: 60),
             ElevatedButton(
-              onPressed: isButtonEnabled ? createAccount : null,
+              onPressed: isButtonEnabled
+                  ? () => {createAccount, Navigator.pop(context)}
+                  : null,
               child: Text('Create Account'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled
@@ -181,24 +210,19 @@ class CreateAccountState extends State<CreateAccount> {
     );
   }
 
-  void createAccount() {
+  void createAccount() async {
     String username = usernameController.text;
     String password = passwordController.text;
     String email = emailController.text;
     int age = int.parse(ageController.text);
 
     db.insertUser(db.User(
-        userid: 1,
         age: age,
         username: username,
         password: password,
         email: email,
         level: 1,
         accuracy: 1.0));
-
-    // userid, age, username, password, email, level, accuracy
-    //db.insertUser(User(,,username,password,email,0,1.0));
-    // need to implement SQLite here so users can actually create an account and "log in"
   }
 }
 
@@ -261,6 +285,8 @@ class LogInState extends State<LogIn> {
             ElevatedButton(
               child: const Text('Log In'),
               onPressed: () {
+                // need a function to get a userId
+                //gUserId =
                 isValid
                     ? Navigator.push(
                         context,

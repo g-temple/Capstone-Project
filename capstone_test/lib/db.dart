@@ -13,8 +13,11 @@ class DatabaseProvider {
       join(await getDatabasesPath(), 'users_database.db'),
       onCreate: (db, version) {
         db.execute('DROP TABLE IF EXISTS users');
+        db.execute('DROP TABLE IF EXISTS reminders');
+        db.execute(
+            'CREATE TABLE reminders(userid INTEGER FOREIGN KEY AUTOINCREMENT, reminderid INTEGER PRIMARY KEY, reminderTxt TEXT, dateSet TEXT, dateCompBy TEXT)');
         return db.execute(
-          'CREATE TABLE users(userid INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
+          'CREATE TABLE users(username TEXT PRIMARY KEY, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
         );
       },
       version: 2,
@@ -31,9 +34,16 @@ Future<void> insertUser(User user) async {
 
   await db.insert(
     'users',
-    user.toMap(),
+    user.userMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
+}
+
+Future<void> insertReminder(Reminder reminder) async {
+  final Database db = DatabaseProvider.database;
+
+  await db.insert('reminders', reminder.reminderMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace);
 }
 
 Future<List<User>> users() async {
@@ -43,7 +53,6 @@ Future<List<User>> users() async {
 
   return [
     for (final {
-          'userid': userid,
           'username': username,
           'age': age,
           'password': password,
@@ -52,7 +61,6 @@ Future<List<User>> users() async {
           'email': email,
         } in userMaps)
       User(
-        userid: userid as int,
         age: age as int,
         username: username as String,
         password: password as String,
@@ -68,9 +76,9 @@ Future<void> updateUser(User user) async {
 
   await db.update(
     'users',
-    user.toMap(),
-    where: 'userid = ?',
-    whereArgs: [user.userid],
+    user.userMap(),
+    where: 'username = ?',
+    whereArgs: [user.username],
   );
 }
 
@@ -85,18 +93,35 @@ Future<bool> checkPass(String username, String password) async {
   return result.isNotEmpty;
 }
 
+Future<bool> checkIfUsernameExists(String name) async {
+  final Database db = DatabaseProvider.database;
+  // Perform a query to check if the given username exists in the database
+  final List<Map<String, dynamic>> result = await db.rawQuery(
+    'SELECT COUNT(*) AS count FROM users WHERE username = ?',
+    [name],
+  );
+
+  // Check the result of the query
+  if (result.isNotEmpty) {
+    final count = result.first['count'] as int;
+    return count <
+        1; // Returns false if count is greater than or equal to 1, indicating the username exists
+  } else {
+    return true; // Return true if the query didn't return any result
+  }
+}
+
 Future<void> deleteUser(int userid) async {
   final Database db = DatabaseProvider.database;
 
   await db.delete(
     'users',
-    where: 'userid = ?',
+    where: 'username = ?',
     whereArgs: [userid],
   );
 }
 
 class User {
-  final int userid;
   final int age;
   final String username;
   final String password;
@@ -105,7 +130,6 @@ class User {
   final double accuracy;
 
   User({
-    required this.userid,
     required this.age,
     required this.username,
     required this.password,
@@ -114,9 +138,8 @@ class User {
     required this.accuracy,
   });
 
-  Map<String, Object?> toMap() {
+  Map<String, Object?> userMap() {
     return {
-      'userid': userid,
       'age': age,
       'username': username,
       'password': password,
@@ -128,6 +151,37 @@ class User {
 
   @override
   String toString() {
-    return 'Person{id: $userid, name: $username, age: $age}';
+    return 'Person{ name: $username, age: $age}';
+  }
+}
+
+class Reminder {
+  final int userId;
+  final int reminderId;
+  final String reminderText;
+  final String dateSet;
+  final String dateCompletedBy;
+
+  Reminder({
+    required this.userId,
+    required this.reminderId,
+    required this.reminderText,
+    required this.dateSet,
+    required this.dateCompletedBy,
+  });
+
+  Map<String, Object?> reminderMap() {
+    return {
+      'userId': userId,
+      'reminderId': reminderId,
+      'reminderTxt': reminderText,
+      'dateSet': dateSet,
+      'dateCompBy': dateCompletedBy,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Reminder{userId: $userId, reminderId: $reminderId, reminderText: $reminderText, dateSet: $dateSet, dateCompletedBy: $dateCompletedBy}';
   }
 }
