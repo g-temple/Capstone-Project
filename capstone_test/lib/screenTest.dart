@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:capstone_test/db.dart' as db;
-import 'package:flutter/widgets.dart';
 
 // global variable to reference for creating and updating tasks
 String gUsername = "";
@@ -31,12 +30,12 @@ class WelcomePage extends StatelessWidget {
       body: Center(
           child: Column(
         children: <Widget>[
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           const Image(
             image: AssetImage('images/logo.png'),
             height: 130,
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           ElevatedButton(
             child: const Text('Create Account'),
             onPressed: () {
@@ -139,7 +138,7 @@ class CreateAccountState extends State<CreateAccount> {
         child: Column(
           children: <Widget>[
             // username box
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: usernameController,
               decoration: const InputDecoration(
@@ -148,27 +147,25 @@ class CreateAccountState extends State<CreateAccount> {
               ),
             ),
             // password
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: passwordController,
               decoration: const InputDecoration(
                 icon: Icon(Icons.key),
                 hintText: 'Please create a password',
-                // TODO need to do lots of logic to ensure strong passwords
               ),
             ),
             //confirm password
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: pConfirmController,
               decoration: const InputDecoration(
                 icon: Icon(Icons.remove_red_eye),
                 hintText: 'Please confirm your password',
-                // TODO need to do lots of logic to ensure strong passwords
               ),
             ),
             //email
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: emailController,
               decoration: const InputDecoration(
@@ -177,7 +174,7 @@ class CreateAccountState extends State<CreateAccount> {
               ),
             ),
             //age
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: ageController,
               decoration: const InputDecoration(
@@ -186,13 +183,13 @@ class CreateAccountState extends State<CreateAccount> {
               ),
             ),
 // Additional text widget to display static text
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               helpText,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             ElevatedButton(
               onPressed: isButtonEnabled
                   ? () {
@@ -206,12 +203,12 @@ class CreateAccountState extends State<CreateAccount> {
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
                   : null,
-              child: Text('Create Account'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled
-                    ? Color.fromARGB(255, 192, 129, 226)
+                    ? const Color.fromARGB(255, 192, 129, 226)
                     : Colors.grey[400],
               ),
+              child: const Text('Create Account'),
             ),
           ],
         ),
@@ -280,21 +277,20 @@ class LogInState extends State<LogIn> {
         body: Center(
             child: Column(
           children: <Widget>[
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: usernameController,
               decoration: const InputDecoration(
                   icon: Icon(Icons.person), hintText: 'Enter Username'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: passwordController,
               decoration: const InputDecoration(
                   icon: Icon(Icons.key), hintText: 'Enter Password'),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             ElevatedButton(
-              child: const Text('Log In'),
               onPressed: () {
                 isValid ? logInHelper() : null;
               },
@@ -303,6 +299,7 @@ class LogInState extends State<LogIn> {
                     ? Color.fromARGB(255, 192, 129, 226)
                     : Colors.grey[400],
               ),
+              child: const Text('Log In'),
             ),
           ],
         )));
