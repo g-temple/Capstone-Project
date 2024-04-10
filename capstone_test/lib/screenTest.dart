@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:capstone_test/db.dart' as db;
+import 'package:flutter/widgets.dart';
 
 // global variable to reference for creating and updating tasks
 String gUsername = "";
@@ -114,7 +115,6 @@ class CreateAccountState extends State<CreateAccount> {
 
     setState(() {
       isButtonEnabled = hasText && strongPass && pMatches && uniqueUsername;
-      //print(isButtonEnabled);
       if (!hasText) {
         helpText = "Please enter your information";
       } else if (!strongPass) {
@@ -194,7 +194,18 @@ class CreateAccountState extends State<CreateAccount> {
             ),
             SizedBox(height: 60),
             ElevatedButton(
-              onPressed: isButtonEnabled ? createAccount : null,
+              onPressed: isButtonEnabled
+                  ? () {
+                      createAccount();
+                      final snackBar = SnackBar(
+                        content: Text(
+                            'Welcome ${usernameController.text} \nYou have successfully created your account'),
+                        action:
+                            SnackBarAction(label: 'Close', onPressed: () {}),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  : null,
               child: Text('Create Account'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled
@@ -208,7 +219,7 @@ class CreateAccountState extends State<CreateAccount> {
     );
   }
 
-  void createAccount() async {
+  void createAccount() {
     String username = usernameController.text;
     String password = passwordController.text;
     String email = emailController.text;
@@ -285,18 +296,7 @@ class LogInState extends State<LogIn> {
             ElevatedButton(
               child: const Text('Log In'),
               onPressed: () {
-                // need a function to get a userId
-                //gUserId =
-                isValid
-                    ? () => {
-                          gUsername = usernameController.text,
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomePage()),
-                          )
-                        }
-                    : null;
+                isValid ? logInHelper() : null;
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: isValid
@@ -306,6 +306,21 @@ class LogInState extends State<LogIn> {
             ),
           ],
         )));
+  }
+
+  void logInHelper() {
+    final snackBar = SnackBar(
+      content: Text(
+          'Welcome ${usernameController.text} \nYou have successfully logged in'),
+      action: SnackBarAction(label: 'Close', onPressed: () {}),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    gUsername = usernameController.text;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
   }
 }
 
@@ -416,14 +431,210 @@ class TaskHome extends StatelessWidget {
           SizedBox(height: 20),
           ElevatedButton(
             child: const Text('Add Tasks'),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddTask()),
+              );
+            },
           ),
           SizedBox(height: 20),
           ElevatedButton(
-            child: const Text('View Completed Tasks'),
-            onPressed: () {},
-          ),
+              child: const Text('View Completed Tasks'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CompletedTasks()));
+              }),
         ])));
+  }
+}
+
+class AddTask extends StatefulWidget {
+  const AddTask({Key? key}) : super(key: key);
+
+  @override
+  CreateAddTaskState createState() => CreateAddTaskState();
+}
+
+class CreateAddTaskState extends State<AddTask> {
+  final taskNameController = TextEditingController();
+  final taskTextController = TextEditingController();
+  final dateSetController = TextEditingController();
+  final dateCompByController = TextEditingController();
+  String helpText = "";
+  bool isTaskBtnEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    taskNameController.addListener(_checkInput);
+    dateSetController.addListener(_checkInput);
+    dateCompByController.addListener(_checkInput);
+  }
+
+  @override
+  void dispose() {
+    taskNameController.dispose();
+    dateSetController.dispose();
+    dateCompByController.dispose();
+    super.dispose();
+  }
+
+  void _checkInput() async {
+    bool uniqueTaskName =
+        await db.checkIfTaskNameExists(taskNameController.text);
+
+    setState(() {
+      isTaskBtnEnabled = uniqueTaskName;
+      if (!uniqueTaskName) {
+        helpText = "A task with that name already exists";
+      } else {
+        helpText = "";
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Task'),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            // task name box
+            SizedBox(height: 20),
+            TextFormField(
+              controller: taskNameController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.notification_important_rounded),
+                hintText: 'Please enter a name for the task',
+              ),
+            ),
+            // date completed by
+            SizedBox(height: 20),
+            TextFormField(
+              controller: dateCompByController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.date_range),
+                hintText: 'Please enter a date to complete the task by',
+              ),
+            ),
+// Additional text widget to display static text
+            SizedBox(height: 20),
+            Text(
+              helpText,
+              style: TextStyle(
+                  fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
+            ),
+            SizedBox(height: 60),
+            ElevatedButton(
+              onPressed: isTaskBtnEnabled ? createTask : null,
+              child: Text('Add Task'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isTaskBtnEnabled
+                    ? Color.fromARGB(255, 192, 129, 226)
+                    : Colors.grey[400],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void createTask() async {
+    String taskName = taskNameController.text;
+    String dateCompBy = dateCompByController.text;
+
+    db.Reminder r = db.Reminder(
+      username: gUsername,
+      reminderName: taskName,
+      dateSet: TimeOfDay.now().toString(),
+      dateCompletedBy: dateCompBy,
+    );
+
+    print(r.toString());
+
+    db.insertReminder(r);
+
+    Navigator.pop(context);
+  }
+}
+
+class CompletedTasks extends StatelessWidget {
+  const CompletedTasks({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('To Do!'),
+      ),
+      body: FutureBuilder<List<DataRow>>(
+        future: getTasksAsDataRows(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return SingleChildScrollView(
+              child: DataTable(
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Task',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Do By',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Type',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ],
+                rows: snapshot.data ?? [], // Use the data from the snapshot
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Future<List<DataRow>> getTasksAsDataRows() async {
+    List<DataRow> tasksToDisplay = [];
+    List<Map<String, dynamic>> reminders =
+        await db.getRemindersForUser(gUsername);
+
+    reminders.forEach((reminder) {
+      tasksToDisplay.add(DataRow(
+        cells: [
+          DataCell(Text(reminder['reminderName'])),
+          DataCell(Text(reminder['dateSet'])),
+          DataCell(Text(reminder['dateCompBy'])),
+        ],
+      ));
+    });
+
+    return tasksToDisplay;
   }
 }
 

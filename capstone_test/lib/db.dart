@@ -15,7 +15,7 @@ class DatabaseProvider {
         db.execute('DROP TABLE IF EXISTS users');
         db.execute('DROP TABLE IF EXISTS reminders');
         db.execute(
-            'CREATE TABLE reminders(username TEXT FOREIGN KEY AUTOINCREMENT, reminderid INTEGER PRIMARY KEY, reminderTxt TEXT, dateSet TEXT, dateCompBy TEXT)');
+            'CREATE TABLE reminders(username TEXT, reminderName TEXT, dateSet TEXT, dateCompBy TEXT, FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE)');
         return db.execute(
           'CREATE TABLE users(username TEXT PRIMARY KEY, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
         );
@@ -45,6 +45,16 @@ Future<void> insertReminder(Reminder reminder) async {
 
   await db.insert('reminders', reminder.reminderMap(),
       conflictAlgorithm: ConflictAlgorithm.replace);
+}
+
+Future<List<Map<String, dynamic>>> getRemindersForUser(String username) async {
+  final Database db = await DatabaseProvider.database;
+
+  return await db.query(
+    'reminders',
+    where: 'username = ?',
+    whereArgs: [username],
+  );
 }
 
 Future<List<User>> users() async {
@@ -112,6 +122,24 @@ Future<bool> checkIfUsernameExists(String name) async {
   }
 }
 
+Future<bool> checkIfTaskNameExists(String name) async {
+  final Database db = DatabaseProvider.database;
+  // Perform a query to check if the given username exists in the database
+  final List<Map<String, dynamic>> result = await db.rawQuery(
+    'SELECT COUNT(*) AS count FROM reminders WHERE reminderName = ?',
+    [name],
+  );
+
+  // Check the result of the query
+  if (result.isNotEmpty) {
+    final count = result.first['count'] as int;
+    return count <
+        1; // Returns false if count is greater than or equal to 1, indicating the username exists
+  } else {
+    return true; // Return true if the query didn't return any result
+  }
+}
+
 Future<void> deleteUser(int userid) async {
   final Database db = DatabaseProvider.database;
 
@@ -158,24 +186,21 @@ class User {
 
 class Reminder {
   final String username;
-  final int reminderId;
-  final String reminderText;
+  final String reminderName;
   final String dateSet;
   final String dateCompletedBy;
 
   Reminder({
     required this.username,
-    required this.reminderId,
-    required this.reminderText,
+    required this.reminderName,
     required this.dateSet,
     required this.dateCompletedBy,
   });
 
   Map<String, Object?> reminderMap() {
     return {
-      'userId': username,
-      'reminderId': reminderId,
-      'reminderTxt': reminderText,
+      'username': username,
+      'reminderName': reminderName,
       'dateSet': dateSet,
       'dateCompBy': dateCompletedBy,
     };
@@ -183,6 +208,6 @@ class Reminder {
 
   @override
   String toString() {
-    return 'Reminder{username: $username, reminderId: $reminderId, reminderText: $reminderText, dateSet: $dateSet, dateCompletedBy: $dateCompletedBy}';
+    return 'Reminder{username: $username, taskDesc: $reminderName dateSet: $dateSet, dateCompletedBy: $dateCompletedBy}';
   }
 }
