@@ -296,7 +296,7 @@ class LogInState extends State<LogIn> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: isValid
-                    ? Color.fromARGB(255, 192, 129, 226)
+                    ? const Color.fromARGB(255, 192, 129, 226)
                     : Colors.grey[400],
               ),
               child: const Text('Log In'),
@@ -333,12 +333,12 @@ class HomePage extends StatelessWidget {
       body: Center(
           child: Column(
         children: <Widget>[
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           const Image(
             image: AssetImage('images/character.png'),
             height: 130,
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           ElevatedButton(
             child: const Text('TASKS'),
             onPressed: () {
@@ -425,7 +425,7 @@ class TaskHome extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             child: const Text('Add Tasks'),
             onPressed: () {
@@ -435,7 +435,7 @@ class TaskHome extends StatelessWidget {
               );
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
               child: const Text('View Completed Tasks'),
               onPressed: () {
@@ -503,7 +503,7 @@ class CreateAddTaskState extends State<AddTask> {
         child: Column(
           children: <Widget>[
             // task name box
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: taskNameController,
               decoration: const InputDecoration(
@@ -512,7 +512,7 @@ class CreateAddTaskState extends State<AddTask> {
               ),
             ),
             // date completed by
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: dateCompByController,
               decoration: const InputDecoration(
@@ -521,21 +521,21 @@ class CreateAddTaskState extends State<AddTask> {
               ),
             ),
 // Additional text widget to display static text
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               helpText,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             ElevatedButton(
               onPressed: isTaskBtnEnabled ? createTask : null,
-              child: Text('Add Task'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isTaskBtnEnabled
-                    ? Color.fromARGB(255, 192, 129, 226)
+                    ? const Color.fromARGB(255, 192, 129, 226)
                     : Colors.grey[400],
               ),
+              child: const Text('Add Task'),
             ),
           ],
         ),
@@ -554,7 +554,7 @@ class CreateAddTaskState extends State<AddTask> {
       dateCompletedBy: dateCompBy,
     );
 
-    print(r.toString());
+    //print(r.toString());
 
     db.insertReminder(r);
 
@@ -563,6 +563,7 @@ class CreateAddTaskState extends State<AddTask> {
 }
 
 class CompletedTasks extends StatelessWidget {
+  // ignore: use_key_in_widget_constructors
   const CompletedTasks({Key? key});
 
   @override
@@ -575,7 +576,7 @@ class CompletedTasks extends StatelessWidget {
         future: getTasksAsDataRows(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -621,7 +622,7 @@ class CompletedTasks extends StatelessWidget {
     List<Map<String, dynamic>> reminders =
         await db.getRemindersForUser(gUsername);
 
-    reminders.forEach((reminder) {
+    for (var reminder in reminders) {
       tasksToDisplay.add(DataRow(
         cells: [
           DataCell(Text(reminder['reminderName'])),
@@ -629,7 +630,7 @@ class CompletedTasks extends StatelessWidget {
           DataCell(Text(reminder['dateCompBy'])),
         ],
       ));
-    });
+    }
 
     return tasksToDisplay;
   }
@@ -647,17 +648,17 @@ class RewardsHome extends StatelessWidget {
       body: Center(
           child: Column(
         children: <Widget>[
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           const Image(
             image: AssetImage('images/game.png'),
             height: 130,
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           ElevatedButton(
             child: const Text('Play Game'),
             onPressed: () {},
           ),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           const Image(
             image: AssetImage('images/character.png'),
             height: 130,
