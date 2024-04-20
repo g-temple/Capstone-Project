@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:capstone_test/db.dart' as db;
+import 'package:table_calendar/table_calendar.dart';
 
 // global variable to reference for creating and updating tasks
 String gUsername = "";
@@ -456,8 +457,148 @@ class AddTask extends StatefulWidget {
 }
 
 class CreateAddTaskState extends State<AddTask> {
+  DateTime today = DateTime.now();
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
+
   final taskNameController = TextEditingController();
-  final taskTextController = TextEditingController();
+  final dateSetController = TextEditingController();
+  final dateCompByController = TextEditingController();
+  final timeCompyByController = TextEditingController();
+  String helpText = "";
+  bool isTaskBtnEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    taskNameController.addListener(_checkInput);
+    dateSetController.addListener(_checkInput);
+    dateCompByController.addListener(_checkInput);
+    timeCompyByController.addListener(_checkInput);
+  }
+
+  @override
+  void dispose() {
+    taskNameController.dispose();
+    dateSetController.dispose();
+    dateCompByController.dispose();
+    timeCompyByController.dispose();
+    super.dispose();
+  }
+
+  void _checkInput() async {
+    bool uniqueTaskName =
+        await db.checkIfTaskNameExists(taskNameController.text);
+
+    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] [AP]M")
+        .hasMatch(timeCompyByController.text);
+
+    setState(() {
+      isTaskBtnEnabled = uniqueTaskName;
+      if (!uniqueTaskName) {
+        helpText = "A task with that name already exists";
+      } else {
+        helpText = "";
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Task'),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            // task name box
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: taskNameController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.notification_important_rounded),
+                hintText: 'Please enter a name for the task',
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text("Please select a date to complete the task by"),
+            // date comple
+            TableCalendar(
+              locale: "en-US",
+              rowHeight: 43,
+              headerStyle: const HeaderStyle(
+                  formatButtonVisible: false, titleCentered: true),
+              availableGestures: AvailableGestures.all,
+              selectedDayPredicate: (day) => isSameDay(day, today),
+              focusedDay: today,
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              onDaySelected: _onDaySelected,
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: timeCompyByController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.timer_outlined),
+                hintText: "Please input a time",
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              helpText,
+              style: const TextStyle(
+                  fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
+            ),
+
+            const SizedBox(height: 60),
+            ElevatedButton(
+              onPressed: isTaskBtnEnabled ? createTask : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isTaskBtnEnabled
+                    ? const Color.fromARGB(255, 192, 129, 226)
+                    : Colors.grey[400],
+              ),
+              child: Text(today.toString()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void createTask() async {
+    String taskName = taskNameController.text;
+    String dateCompBy = dateCompByController.text;
+
+    db.Reminder r = db.Reminder(
+      username: gUsername,
+      reminderName: taskName,
+      dateSet: TimeOfDay.now().toString(),
+      dateCompletedBy: dateCompBy,
+    );
+
+    //print(r.toString());
+
+    db.insertReminder(r);
+
+    Navigator.pop(context);
+  }
+}
+
+/*
+class CreateAddTaskState extends State<AddTask> {
+  DateTime today = DateTime.now();
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
+
+  final taskNameController = TextEditingController();
   final dateSetController = TextEditingController();
   final dateCompByController = TextEditingController();
   String helpText = "";
@@ -500,46 +641,18 @@ class CreateAddTaskState extends State<AddTask> {
         title: const Text('Create Task'),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            // task name box
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: taskNameController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.notification_important_rounded),
-                hintText: 'Please enter a name for the task',
-              ),
-            ),
-            // date completed by
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: dateCompByController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.date_range),
-                hintText: 'Please enter a date to complete the task by',
-              ),
-            ),
-// Additional text widget to display static text
-            const SizedBox(height: 20),
-            Text(
-              helpText,
-              style: const TextStyle(
-                  fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
-            ),
-            const SizedBox(height: 60),
-            ElevatedButton(
-              onPressed: isTaskBtnEnabled ? createTask : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isTaskBtnEnabled
-                    ? const Color.fromARGB(255, 192, 129, 226)
-                    : Colors.grey[400],
-              ),
-              child: const Text('Add Task'),
-            ),
-          ],
-        ),
-      ),
+          child: TableCalendar(
+        locale: "en-US",
+        rowHeight: 43,
+        headerStyle:
+            const HeaderStyle(formatButtonVisible: false, titleCentered: true),
+        availableGestures: AvailableGestures.all,
+        selectedDayPredicate: (day) => isSameDay(day, today),
+        focusedDay: today,
+        firstDay: DateTime.utc(2010, 10, 16),
+        lastDay: DateTime.utc(2030, 3, 14),
+        onDaySelected: _onDaySelected,
+      )),
     );
   }
 
@@ -561,7 +674,7 @@ class CreateAddTaskState extends State<AddTask> {
     Navigator.pop(context);
   }
 }
-
+*/
 class CompletedTasks extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
   const CompletedTasks({Key? key});
