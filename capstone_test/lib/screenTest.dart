@@ -364,88 +364,196 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class TaskHome extends StatelessWidget {
-  const TaskHome({super.key});
+class TaskHome extends StatefulWidget {
+  const TaskHome({Key? key}) : super(key: key);
+
+  @override
+  _TaskHomeState createState() => _TaskHomeState();
+}
+
+class _TaskHomeState extends State<TaskHome> {
+  List<Map<String, dynamic>> reminders =
+      []; // Initialize reminders as an empty list
+  late List<bool> taskCompletionStatus;
+  bool isLoading = true; // Flag to track loading status
+
+  @override
+  void initState() {
+    super.initState();
+    loadReminders();
+  }
+
+  Future<void> loadReminders() async {
+    final loadedReminders = await db.getRemindersForUser(gUsername);
+    setState(() {
+      reminders = loadedReminders; // Update reminders with fetched data
+      taskCompletionStatus = List.generate(reminders.length, (index) => false);
+      isLoading =
+          false; // Set loading status to false once reminders are loaded
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('To Do!'),
-        ),
-        body: Center(
-            child: Column(children: <Widget>[
-          DataTable(
-            columns: const <DataColumn>[
-              DataColumn(
-                label: Expanded(
-                  child: Text(
-                    'Task',
-                    style: TextStyle(fontStyle: FontStyle.italic),
+      appBar: AppBar(
+        title: Text(getDate()),
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  reminders.isEmpty
+                      ? Center(
+                          child: Text('No reminders'),
+                        )
+                      : DataTable(
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  'Task',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  'Do By',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Expanded(
+                                child: Text(
+                                  'Click to complete',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ),
+                          ],
+                          rows: List.generate(reminders.length, (index) {
+                            return DataRow(
+                              cells: [
+                                DataCell(Text(
+                                    reminders[index]['reminderName'] ?? 'N/A')),
+                                DataCell(
+                                    Text(reminders[index]['dateSet'] ?? 'N/A')),
+                                DataCell(
+                                  Checkbox(
+                                    value: taskCompletionStatus[index],
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        taskCompletionStatus[index] = newValue!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    child: const Text('Add Tasks'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddTask(),
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Expanded(
-                  child: Text(
-                    'Do By',
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                  SizedBox(height: 20),
+                  if (reminders.isNotEmpty)
+                    ElevatedButton(
+                      child: const Text('Complete Checked Tasks'),
+                      onPressed: updateReminders,
+                    ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    child: const Text('View Completed Tasks'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CompletedTasks(),
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Expanded(
-                  child: Text(
-                    'Type',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-              ),
-            ],
-            rows: const <DataRow>[
-              DataRow(
-                cells: <DataCell>[
-                  DataCell(Text('Brush Teeth')),
-                  DataCell(Text('10pm')),
-                  DataCell(Text('Home')),
                 ],
               ),
-              DataRow(
-                cells: <DataCell>[
-                  DataCell(Text('Math Homework')),
-                  DataCell(Text('8pm')),
-                  DataCell(Text('School')),
-                ],
-              ),
-              DataRow(
-                cells: <DataCell>[
-                  DataCell(Text('Pack Lunch')),
-                  DataCell(Text('8am')),
-                  DataCell(Text('Home')),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            child: const Text('Add Tasks'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddTask()),
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-              child: const Text('View Completed Tasks'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CompletedTasks()));
-              }),
-        ])));
+            ),
+    );
+  }
+
+  String getDate() {
+    DateTime currDate = DateTime.now();
+    String month = '';
+    switch (currDate.month) {
+      case 1:
+        month = 'January';
+        break;
+      case 2:
+        month = 'February';
+        break;
+      case 3:
+        month = 'March';
+        break;
+      case 4:
+        month = 'April';
+        break;
+      case 5:
+        month = 'May';
+        break;
+      case 6:
+        month = 'June';
+        break;
+      case 7:
+        month = 'July';
+        break;
+      case 8:
+        month = 'August';
+        break;
+      case 9:
+        month = 'September';
+        break;
+      case 10:
+        month = 'October';
+        break;
+      case 11:
+        month = 'November';
+        break;
+      case 12:
+        month = 'December';
+        break;
+      default:
+        month = '';
+    }
+
+    String day = currDate.day.toString();
+    String year = currDate.year.toString();
+    String hour = currDate.hour.toString().padLeft(2, '0');
+    String minute = currDate.minute.toString().padLeft(2, '0');
+
+    return '$month $day, $year, $hour:$minute';
+  }
+
+  Future<void> updateReminders() async {
+    for (int i = 0; i < reminders.length; i++) {
+      if (taskCompletionStatus[i]) {
+        String reminderName = reminders[i]['reminderName'];
+        // Update reminder completion status in the database
+        await db.updateCompletedReminder(reminderName);
+      }
+    }
+    // Reload reminders after updating completion status
+    await loadReminders();
   }
 }
 
@@ -575,17 +683,20 @@ class CreateAddTaskState extends State<AddTask> {
     String dateCompBy = dateCompByController.text;
 
     db.Reminder r = db.Reminder(
-      username: gUsername,
-      reminderName: taskName,
-      dateSet: TimeOfDay.now().toString(),
-      dateCompletedBy: dateCompBy,
-    );
+        username: gUsername,
+        reminderName: taskName,
+        dateSet: TimeOfDay.now().toString(),
+        dateCompletedBy: dateCompBy,
+        isCompleted: 0);
 
     //print(r.toString());
 
     db.insertReminder(r);
-
-    Navigator.pop(context);
+    Navigator.pop(context, true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => TaskHome()),
+    );
   }
 }
 

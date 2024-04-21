@@ -15,7 +15,7 @@ class DatabaseProvider {
         db.execute('DROP TABLE IF EXISTS users');
         db.execute('DROP TABLE IF EXISTS reminders');
         db.execute(
-            'CREATE TABLE reminders(username TEXT, reminderName TEXT, dateSet TEXT, dateCompBy TEXT, FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE)');
+            'CREATE TABLE reminders(username TEXT, reminderName TEXT, dateSet TEXT, dateCompBy TEXT, isCompleted INTEGER, FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE)');
         return db.execute(
           'CREATE TABLE users(username TEXT PRIMARY KEY, age INTEGER, password TEXT, level INTEGER, accuracy REAL, email TEXT)',
         );
@@ -45,6 +45,8 @@ Future<void> insertReminder(Reminder reminder) async {
 
   await db.insert('reminders', reminder.reminderMap(),
       conflictAlgorithm: ConflictAlgorithm.replace);
+
+  print(reminder.toString());
 }
 
 Future<List<Map<String, dynamic>>> getRemindersForUser(String username) async {
@@ -52,7 +54,7 @@ Future<List<Map<String, dynamic>>> getRemindersForUser(String username) async {
 
   return await db.query(
     'reminders',
-    where: 'username = ?',
+    where: 'username = ? AND isCompleted = 0',
     whereArgs: [username],
   );
 }
@@ -91,6 +93,14 @@ Future<void> updateUser(User user) async {
     where: 'username = ?',
     whereArgs: [user.username],
   );
+}
+
+Future<void> updateCompletedReminder(String taskName) async {
+  final Database db = DatabaseProvider.database;
+
+  await db.execute(
+      'UPDATE reminders SET isCompleted = 1 WHERE reminderName = ?',
+      [taskName]);
 }
 
 Future<bool> checkPass(String username, String password) async {
@@ -189,13 +199,14 @@ class Reminder {
   final String reminderName;
   final String dateSet;
   final String dateCompletedBy;
+  final int isCompleted;
 
-  Reminder({
-    required this.username,
-    required this.reminderName,
-    required this.dateSet,
-    required this.dateCompletedBy,
-  });
+  Reminder(
+      {required this.username,
+      required this.reminderName,
+      required this.dateSet,
+      required this.dateCompletedBy,
+      required this.isCompleted});
 
   Map<String, Object?> reminderMap() {
     return {
@@ -203,6 +214,7 @@ class Reminder {
       'reminderName': reminderName,
       'dateSet': dateSet,
       'dateCompBy': dateCompletedBy,
+      'isCompleted': 0
     };
   }
 
