@@ -56,6 +56,7 @@ Future<List<Map<String, dynamic>>> getRemindersForUser(String username) async {
     'reminders',
     where: 'username = ? AND isCompleted = 0',
     whereArgs: [username],
+    limit: 10,
   );
 }
 
