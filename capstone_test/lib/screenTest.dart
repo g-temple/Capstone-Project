@@ -440,8 +440,8 @@ class _TaskHomeState extends State<TaskHome> {
                               cells: [
                                 DataCell(Text(
                                     reminders[index]['reminderName'] ?? 'N/A')),
-                                DataCell(
-                                    Text(reminders[index]['dateSet'] ?? 'N/A')),
+                                DataCell(Text(
+                                    reminders[index]['dateCompBy'] ?? 'N/A')),
                                 DataCell(
                                   Checkbox(
                                     value: taskCompletionStatus[index],
@@ -601,13 +601,19 @@ class CreateAddTaskState extends State<AddTask> {
     bool uniqueTaskName =
         await db.checkIfTaskNameExists(taskNameController.text);
 
-    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] [AP]M")
-        .hasMatch(timeCompyByController.text);
+    bool timeIsValid = RegExp("^([1-9]|1[0-2]):[0-5][0-9] [AP]M")
+        .hasMatch(dateCompByController.text);
+
+    bool tasknameLen = taskNameController.text.length < 20;
 
     setState(() {
       isTaskBtnEnabled = uniqueTaskName;
       if (!uniqueTaskName) {
         helpText = "A task with that name already exists";
+      } else if (!tasknameLen) {
+        helpText = "Please enter a shorter task name";
+      } else if (!timeIsValid) {
+        helpText = "Please enter a valid time in 12:00 AM/PM format";
       } else {
         helpText = "";
       }
@@ -649,7 +655,7 @@ class CreateAddTaskState extends State<AddTask> {
             ),
             const SizedBox(height: 20),
             TextFormField(
-              controller: timeCompyByController,
+              controller: dateCompByController,
               decoration: const InputDecoration(
                 icon: Icon(Icons.timer_outlined),
                 hintText: "Please input a time",
@@ -685,8 +691,12 @@ class CreateAddTaskState extends State<AddTask> {
     db.Reminder r = db.Reminder(
         username: gUsername,
         reminderName: taskName,
-        dateSet: TimeOfDay.now().toString(),
-        dateCompletedBy: dateCompBy,
+        dateSet: TimeOfDay.now().toString(), // TODO make this format better
+        dateCompletedBy: today.month.toString() +
+            " / " +
+            today.day.toString() +
+            "\n" +
+            dateCompBy,
         isCompleted: 0);
 
     //print(r.toString());
@@ -700,92 +710,6 @@ class CreateAddTaskState extends State<AddTask> {
   }
 }
 
-/*
-class CreateAddTaskState extends State<AddTask> {
-  DateTime today = DateTime.now();
-  void _onDaySelected(DateTime day, DateTime focusedDay) {
-    setState(() {
-      today = day;
-    });
-  }
-
-  final taskNameController = TextEditingController();
-  final dateSetController = TextEditingController();
-  final dateCompByController = TextEditingController();
-  String helpText = "";
-  bool isTaskBtnEnabled = false;
-
-  @override
-  void initState() {
-    super.initState();
-    taskNameController.addListener(_checkInput);
-    dateSetController.addListener(_checkInput);
-    dateCompByController.addListener(_checkInput);
-  }
-
-  @override
-  void dispose() {
-    taskNameController.dispose();
-    dateSetController.dispose();
-    dateCompByController.dispose();
-    super.dispose();
-  }
-
-  void _checkInput() async {
-    bool uniqueTaskName =
-        await db.checkIfTaskNameExists(taskNameController.text);
-
-    setState(() {
-      isTaskBtnEnabled = uniqueTaskName;
-      if (!uniqueTaskName) {
-        helpText = "A task with that name already exists";
-      } else {
-        helpText = "";
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Task'),
-      ),
-      body: Center(
-          child: TableCalendar(
-        locale: "en-US",
-        rowHeight: 43,
-        headerStyle:
-            const HeaderStyle(formatButtonVisible: false, titleCentered: true),
-        availableGestures: AvailableGestures.all,
-        selectedDayPredicate: (day) => isSameDay(day, today),
-        focusedDay: today,
-        firstDay: DateTime.utc(2010, 10, 16),
-        lastDay: DateTime.utc(2030, 3, 14),
-        onDaySelected: _onDaySelected,
-      )),
-    );
-  }
-
-  void createTask() async {
-    String taskName = taskNameController.text;
-    String dateCompBy = dateCompByController.text;
-
-    db.Reminder r = db.Reminder(
-      username: gUsername,
-      reminderName: taskName,
-      dateSet: TimeOfDay.now().toString(),
-      dateCompletedBy: dateCompBy,
-    );
-
-    //print(r.toString());
-
-    db.insertReminder(r);
-
-    Navigator.pop(context);
-  }
-}
-*/
 class CompletedTasks extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
   const CompletedTasks({Key? key});
