@@ -26,37 +26,98 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome'),
+        toolbarHeight: 40,
+
       ),
-      body: Center(
-          child: Column(
-        children: <Widget>[
-          const SizedBox(height: 20),
-          const Image(
-            image: AssetImage('images/logo.png'),
-            height: 130,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/Untitled-1.png'),
+                opacity: .5,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            child: const Text('Create Account'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CreateAccount()),
-              );
-            },
+          Center(
+            child: Container(
+              width: 347, // Adjust according to your design
+              height: 720, // Adjust according to your design
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(47)),
+
+              child: Center(
+                  child: Column(
+                children: <Widget>[
+                  SizedBox(height: 40),
+                  const Image(
+                    image: AssetImage('images/TODO_Logo copy.png'),
+                    height: 150,
+                  ),
+                  SizedBox(height: 50),
+                  SizedBox(
+                    width: 157,
+                    height: 41,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CreateAccount()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff8491d9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
+                      child: const Text('Create Account',
+                          style: TextStyle(
+                              color: const Color(0xffffffff),
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "OpenSans",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 12.0),
+                          textAlign: TextAlign.center),
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                  SizedBox(
+                    width: 157,
+                    height: 75,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LogIn()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff8491d9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
+                      child: const Text(
+                          'Have an Account?\n '
+                          'Log In',
+                          style: TextStyle(
+                              color: const Color(0xffffffff),
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "OpenSans",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 12.0),
+                          textAlign: TextAlign.center),
+                    ),
+                  )
+                ],
+              )),
+            ),
           ),
-          ElevatedButton(
-            child: const Text('Log In'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LogIn()),
-              );
-            },
-          )
         ],
-      )),
+      ),
     );
   }
 }
@@ -133,86 +194,277 @@ class CreateAccountState extends State<CreateAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            // username box
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.person),
-                hintText: 'Please create a username',
-              ),
-            ),
-            // password
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: passwordController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.key),
-                hintText: 'Please create a password',
-              ),
-            ),
-            //confirm password
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: pConfirmController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.remove_red_eye),
-                hintText: 'Please confirm your password',
-              ),
-            ),
-            //email
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.email),
-                hintText: 'Please enter your email',
-              ),
-            ),
-            //age
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: ageController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.numbers),
-                hintText: 'Please enter your age',
-              ),
-            ),
-// Additional text widget to display static text
-            const SizedBox(height: 20),
-            Text(
-              helpText,
-              style: const TextStyle(
-                  fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
-            ),
-            const SizedBox(height: 60),
-            ElevatedButton(
-              onPressed: isButtonEnabled
-                  ? () {
-                      createAccount();
-                      final snackBar = SnackBar(
-                        content: Text(
-                            'Welcome ${usernameController.text} \nYou have successfully created your account'),
-                        action:
-                            SnackBarAction(label: 'Close', onPressed: () {}),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isButtonEnabled
-                    ? const Color.fromARGB(255, 192, 129, 226)
-                    : Colors.grey[400],
-              ),
-              child: const Text('Create Account'),
-            ),
-          ],
+        toolbarHeight: 40,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pop(); // Pop the current route when the back button is pressed
+          },
         ),
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/Untitled-1.png'),
+                opacity: .5,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              width: 347, // Adjust according to your design
+              height: 720, // Adjust according to your design
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(47)),
+
+              child: Center(
+                  child: Column(
+                children: <Widget>[
+                  SizedBox(height: 40),
+                  const Image(
+                    image: AssetImage('images/TODO_Logo copy.png'),
+                    height: 150,
+                  ),
+
+                  // username box
+                  SizedBox(height: 40),
+                  Text("Username",
+                      style: const TextStyle(
+                          color: const Color(0xff000000),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "OpenSans",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12.0),
+                      textAlign: TextAlign.left),
+                  SizedBox(
+                    height: 20,
+                    width: 268,
+                    child: TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      style: TextStyle(
+                        fontFamily: "OpenSans",
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12.0,
+                      ),
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  // password
+                  SizedBox(height: 20),
+                  Text("Password",
+                      style: const TextStyle(
+                          color: const Color(0xff000000),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "OpenSans",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12.0),
+                      textAlign: TextAlign.left),
+
+                  SizedBox(
+                    height: 20,
+                    width: 268,
+                    child: TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      obscureText: true,
+                      style: TextStyle(
+                          fontFamily: "OpenSans",
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0),
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  //confirm password
+                  SizedBox(height: 20),
+                  Text("Confirm Password",
+                      style: const TextStyle(
+                          color: const Color(0xff000000),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "OpenSans",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12.0),
+                      textAlign: TextAlign.left),
+                  SizedBox(
+                    height: 20,
+                    width: 268,
+                    child: TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      obscureText: true,
+                      style: TextStyle(
+                          fontFamily: "OpenSans",
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0),
+                      controller: pConfirmController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  //email
+                  SizedBox(height: 20),
+                  Text("Email Address",
+                      style: const TextStyle(
+                          color: const Color(0xff000000),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "OpenSans",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12.0),
+                      textAlign: TextAlign.left),
+                  SizedBox(
+                    height: 20,
+                    width: 268,
+                    child: TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      style: TextStyle(
+                          fontFamily: "OpenSans",
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0),
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  //age
+                  SizedBox(height: 20),
+                  Text("Age",
+                      style: const TextStyle(
+                          color: const Color(0xff000000),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "OpenSans",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12.0),
+                      textAlign: TextAlign.left),
+                  SizedBox(
+                    height: 20,
+                    width: 268,
+                    child: TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      style: TextStyle(
+                          fontFamily: "OpenSans",
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0),
+                      controller: ageController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+                  Text(
+                    helpText,
+                    style: const TextStyle(
+                        fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
+                  ),
+
+// need to implement a checkbox
+                  SizedBox(height: 60),
+                  ElevatedButton(
+                    onPressed: isButtonEnabled
+                        ? () {
+                            createAccount();
+                            final snackBar = SnackBar(
+                              content: Text(
+                                  'Welcome ${usernameController.text} \nYou have successfully created your account'),
+                              action: SnackBarAction(
+                                  label: 'Close', onPressed: () {}),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                        : null,
+                    child: Text('Create Account'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isButtonEnabled
+                          ? Color(0xff8491d9)
+                          : Colors.grey[400],
+                    ),
+                  ),
+                ],
+              )),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -272,38 +524,140 @@ class LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('LogIn'),
+      appBar: AppBar(
+     toolbarHeight: 40,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pop(); // Pop the current route when the back button is pressed
+          },
         ),
-        body: Center(
-            child: Column(
-          children: <Widget>[
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.person), hintText: 'Enter Username'),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: passwordController,
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.key), hintText: 'Enter Password'),
-            ),
-            const SizedBox(height: 60),
-            ElevatedButton(
-              onPressed: () {
-                isValid ? logInHelper() : null;
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isValid
-                    ? const Color.fromARGB(255, 192, 129, 226)
-                    : Colors.grey[400],
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/Untitled-1.png'),
+                opacity: .5,
+                fit: BoxFit.cover,
               ),
-              child: const Text('Log In'),
             ),
-          ],
-        )));
+          ),
+          Center(
+            child: Container(
+              width: 347, // Adjust according to your design
+              height: 720, // Adjust according to your design
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(47)),
+
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 40),
+                    const Image(
+                      image: AssetImage('images/TODO_Logo copy.png'),
+                      height: 150,
+                    ),
+                    SizedBox(height: 20),
+
+                    //Username
+                    Text("Username",
+                        style: const TextStyle(
+                            color: const Color(0xff000000),
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "OpenSans",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12.0),
+                        textAlign: TextAlign.left),
+                    SizedBox(
+                      height: 20,
+                      width: 268,
+                      child: TextFormField(
+                        controller: usernameController,
+                        textAlignVertical: TextAlignVertical.center,
+                        textAlign: TextAlign.center,
+                        showCursor: false,
+                        style: TextStyle(
+                            fontFamily: "OpenSans",
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12.0),
+                        //controller: ageController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color(0x408491d9),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0x408491d9), width: 2.0),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          isDense: true, // Added this
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+                    Text("Password",
+                        style: const TextStyle(
+                            color: const Color(0xff000000),
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "OpenSans",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12.0),
+                        textAlign: TextAlign.left),
+
+                    SizedBox(
+                      height: 20,
+                      width: 268,
+                      child: TextFormField(
+                        controller: passwordController,
+                        textAlignVertical: TextAlignVertical.center,
+                        textAlign: TextAlign.center,
+                        showCursor: false,
+                        obscureText: true,
+                        //controller: ageController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color(0x408491d9),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0x408491d9), width: 2.0),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          isDense: true, // Added this
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 60),
+                    ElevatedButton(
+                      onPressed: () {
+                        isValid ? logInHelper() : null;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isValid ? Color(0xff8491d9) : Colors.grey[400],
+                      ),
+                      child: const Text('Log In'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void logInHelper() {
@@ -322,56 +676,14 @@ class LogInState extends State<LogIn> {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: Center(
-          child: Column(
-        children: <Widget>[
-          const SizedBox(height: 20),
-          const Image(
-            image: AssetImage('images/character.png'),
-            height: 130,
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            child: const Text('TASKS'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const TaskHome()),
-              );
-            },
-          ),
-          ElevatedButton(
-            child: const Text('Rewards'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const RewardsHome()),
-              );
-            },
-          )
-        ],
-      )),
-    );
-  }
+  HomePageState createState() => HomePageState();
 }
 
-class TaskHome extends StatefulWidget {
-  const TaskHome({Key? key}) : super(key: key);
-
-  @override
-  _TaskHomeState createState() => _TaskHomeState();
-}
-
-class _TaskHomeState extends State<TaskHome> {
+class HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> reminders =
       []; // Initialize reminders as an empty list
   late List<bool> taskCompletionStatus;
@@ -396,100 +708,311 @@ class _TaskHomeState extends State<TaskHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(getDate()),
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  reminders.isEmpty
-                      ? Center(
-                          child: Text('No reminders'),
-                        )
-                      : DataTable(
-                          columns: const <DataColumn>[
-                            DataColumn(
-                              label: Expanded(
-                                child: Text(
-                                  'Task',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Expanded(
-                                child: Text(
-                                  'Do By',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Expanded(
-                                child: Text(
-                                  'Click to complete',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ),
-                          ],
-                          rows: List.generate(reminders.length, (index) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(
-                                    reminders[index]['reminderName'] ?? 'N/A')),
-                                DataCell(Text(
-                                    reminders[index]['dateCompBy'] ?? 'N/A')),
-                                DataCell(
-                                  Checkbox(
-                                    value: taskCompletionStatus[index],
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        taskCompletionStatus[index] = newValue!;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          }),
-                        ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    child: const Text('Add Tasks'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddTask(),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  if (reminders.isNotEmpty)
-                    ElevatedButton(
-                      child: const Text('Complete Checked Tasks'),
-                      onPressed: updateReminders,
-                    ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    child: const Text('View Completed Tasks'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CompletedTasks(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+        appBar: AppBar(
+          toolbarHeight: 40,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context)
+                  .pop(); // Pop the current route when the back button is pressed
+            },
+          ),
+        ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('images/Untitled-1.png'),
+                  opacity: .5,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-    );
+            Center(
+              child: Container(
+                width: 347, // Adjust according to your design
+                height: 720, // Adjust according to your design
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(47)),
+
+                child: Center(
+                    child: Column(
+                  children: <Widget>[
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      child: Container(
+                          alignment: Alignment.center,
+                          width: 314,
+                          height: 138,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                              color: const Color(0xffabb5ef)),
+                          child: Text(
+                            "Welcome Username",
+                            style: TextStyle(
+                                color: const Color(0xffffffff),
+                                fontWeight: FontWeight.w700,
+                                fontFamily: "Inter",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 12.0),
+                            textAlign: TextAlign.center,
+                          )),
+                    ),
+                    // const Image(
+                    //   image: AssetImage('images/character.png'),
+                    //   height: 130,
+                    // ),
+
+                    const SizedBox(height: 40),
+                    SizedBox(
+                      width: 315,
+                      child: Container(
+                          child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: reminders.isEmpty
+                            ? Center(
+                                child: Text('No reminders'),
+                              )
+                            : DataTable(
+                                border: TableBorder(
+                                    horizontalInside: BorderSide(
+                                        width: 1,
+                                        color: Color(0xfffd7e7e),
+                                        style: BorderStyle.solid)),
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(253, 126, 126, 0.19),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                columnSpacing: 10.0,
+                                sortAscending: true,
+                                columns: const <DataColumn>[
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'Task',
+                                        // style: TextStyle(
+                                        //     fontStyle: FontStyle.italic),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'Do By',
+                                        // style: TextStyle(
+                                        //     fontStyle: FontStyle.italic),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'Complete',
+                                        // style: TextStyle(
+                                        //     fontStyle: FontStyle.italic),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                headingRowColor: MaterialStateColor.resolveWith(
+                                    (states) => Color(0xfffd7e7e)),
+                                headingTextStyle: TextStyle(
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: "Inter",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 12.0),
+                                rows: List.generate(reminders.length, (index) {
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(Text(reminders[index]
+                                              ['reminderName'] ??
+                                          'N/A')),
+                                      DataCell(Text(reminders[index]
+                                              ['dateCompletedBy'] ??
+                                          'N/A')),
+                                      DataCell(
+                                        Checkbox(
+                                          value: taskCompletionStatus[index],
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              taskCompletionStatus[index] =
+                                                  newValue!;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                      )),
+                    ),
+
+                    // reminders.isEmpty
+                    //     ? Center(
+                    //         child: Text('No reminders'),
+                    //       )
+                    //     : DataTable(
+                    //       border: TableBorder(horizontalInside: BorderSide(width: 1, color: Color(0xfffd7e7e), style: BorderStyle.solid)),
+                    //       decoration: BoxDecoration(
+                    //         color: Color.fromRGBO(253, 126, 126, 0.19),
+                    //         borderRadius: BorderRadius.circular(12),
+                    //       ),
+
+                    //         columnSpacing: 10.0,
+                    //         sortAscending: true,
+                    //         columns: const <DataColumn>[
+                    //           DataColumn(
+                    //             label: Expanded(
+                    //               child: Text(
+                    //                 'Task',
+                    //                 // style: TextStyle(
+                    //                 //     fontStyle: FontStyle.italic),
+                    //                     textAlign: TextAlign.center,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           DataColumn(
+                    //             label: Expanded(
+                    //               child: Text(
+                    //                 'Do By',
+                    //                 // style: TextStyle(
+                    //                 //     fontStyle: FontStyle.italic),
+                    //                     textAlign: TextAlign.center,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           DataColumn(
+                    //             label: Expanded(
+                    //               child: Text(
+                    //                 'Complete',
+                    //                 // style: TextStyle(
+                    //                 //     fontStyle: FontStyle.italic),
+                    //                 textAlign: TextAlign.center,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ],
+                    //          headingRowColor: MaterialStateColor.resolveWith((states) => Color(0xfffd7e7e)),
+                    //          headingTextStyle: TextStyle(
+                    //             color: const Color(0xffffffff),
+                    //             fontWeight: FontWeight.w700,
+                    //             fontFamily: "Inter",
+                    //             fontStyle: FontStyle.normal,
+                    //             fontSize: 12.0),
+
+                    //         rows:
+
+                    //             List.generate(reminders.length, (index) {
+                    //           return DataRow(
+                    //             cells: [
+                    //               DataCell(Text(reminders[index]
+                    //                       ['reminderName'] ??
+                    //                   'N/A')),
+                    //               DataCell(Text(reminders[index]
+                    //                       ['dateSet'] ??
+                    //                   'N/A')),
+                    //               DataCell(
+                    //                 Checkbox(
+                    //                   value: taskCompletionStatus[index],
+                    //                   onChanged: (newValue) {
+                    //                     setState(() {
+                    //                       taskCompletionStatus[index] =
+                    //                           newValue!;
+                    //                     });
+                    //                   },
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           );
+                    //         }
+                    //         ),
+                    //       ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      child: const Text('Add Tasks'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AddTask(),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    if (reminders.isNotEmpty)
+                      ElevatedButton(
+                        child: const Text('Complete Checked Tasks'),
+                        onPressed: updateReminders,
+                      ),
+                    SizedBox(height: 20),
+                    // ElevatedButton(
+                    //   child: const Text('View Completed Tasks'),
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => const CompletedTasks(),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+
+                    // ElevatedButton(
+                    //   child: const Text('TASKS'),
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => const HomePage()),
+                    //     );
+                    //   },
+                    // ),
+
+                    SizedBox(height: 40),
+                    SizedBox(
+                      height: 75,
+                      width: 151,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xffabb5ef),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  12)), // Button border radius
+                        ),
+                        child: const Text(
+                          'Rewards',
+                          style: TextStyle(
+                              color: const Color(0xffffffff),
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "Inter",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 12.0),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RewardsHome()),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                )),
+              ),
+            ),
+          ],
+        ));
   }
 
   String getDate() {
@@ -557,6 +1080,199 @@ class _TaskHomeState extends State<TaskHome> {
   }
 }
 
+// class TaskHome extends StatefulWidget {
+//   const TaskHome({Key? key}) : super(key: key);
+
+//   @override
+//   _TaskHomeState createState() => _TaskHomeState();
+// }
+
+// class _TaskHomeState extends State<TaskHome> {
+//   List<Map<String, dynamic>> reminders =
+//       []; // Initialize reminders as an empty list
+//   late List<bool> taskCompletionStatus;
+//   bool isLoading = true; // Flag to track loading status
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     loadReminders();
+//   }
+
+//   Future<void> loadReminders() async {
+//     final loadedReminders = await db.getRemindersForUser(gUsername);
+//     setState(() {
+//       reminders = loadedReminders; // Update reminders with fetched data
+//       taskCompletionStatus = List.generate(reminders.length, (index) => false);
+//       isLoading =
+//           false; // Set loading status to false once reminders are loaded
+//     });
+//   }
+
+// @override
+// Widget build(BuildContext context) {
+//   return Scaffold(
+//     appBar: AppBar(
+//       title: Text(getDate()),
+//     ),
+//     body: isLoading
+//         ? Center(child: CircularProgressIndicator())
+//         : SingleChildScrollView(
+//             child: Column(
+//               children: [
+//                 reminders.isEmpty
+//                     ? Center(
+//                         child: Text('No reminders'),
+//                       )
+//                     : DataTable(
+//                         columns: const <DataColumn>[
+//                           DataColumn(
+//                             label: Expanded(
+//                               child: Text(
+//                                 'Task',
+//                                 style: TextStyle(fontStyle: FontStyle.italic),
+//                               ),
+//                             ),
+//                           ),
+//                           DataColumn(
+//                             label: Expanded(
+//                               child: Text(
+//                                 'Do By',
+//                                 style: TextStyle(fontStyle: FontStyle.italic),
+//                               ),
+//                             ),
+//                           ),
+//                           DataColumn(
+//                             label: Expanded(
+//                               child: Text(
+//                                 'Click to complete',
+//                                 style: TextStyle(fontStyle: FontStyle.italic),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                         rows: List.generate(reminders.length, (index) {
+//                           return DataRow(
+//                             cells: [
+//                               DataCell(Text(
+//                                   reminders[index]['reminderName'] ?? 'N/A')),
+//                               DataCell(
+//                                   Text(reminders[index]['dateSet'] ?? 'N/A')),
+//                               DataCell(
+//                                 Checkbox(
+//                                   value: taskCompletionStatus[index],
+//                                   onChanged: (newValue) {
+//                                     setState(() {
+//                                       taskCompletionStatus[index] = newValue!;
+//                                     });
+//                                   },
+//                                 ),
+//                               ),
+//                             ],
+//                           );
+//                         }),
+//                       ),
+//                 SizedBox(height: 20),
+//                 ElevatedButton(
+//                   child: const Text('Add Tasks'),
+//                   onPressed: () {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (context) => const AddTask(),
+//                       ),
+//                     );
+//                   },
+//                 ),
+//                 SizedBox(height: 20),
+//                 if (reminders.isNotEmpty)
+//                   ElevatedButton(
+//                     child: const Text('Complete Checked Tasks'),
+//                     onPressed: updateReminders,
+//                   ),
+//                 SizedBox(height: 20),
+//                 ElevatedButton(
+//                   child: const Text('View Completed Tasks'),
+//                   onPressed: () {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (context) => const CompletedTasks(),
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ],
+//             ),
+//           ),
+//   );
+// }
+
+//   String getDate() {
+//     DateTime currDate = DateTime.now();
+//     String month = '';
+//     switch (currDate.month) {
+//       case 1:
+//         month = 'January';
+//         break;
+//       case 2:
+//         month = 'February';
+//         break;
+//       case 3:
+//         month = 'March';
+//         break;
+//       case 4:
+//         month = 'April';
+//         break;
+//       case 5:
+//         month = 'May';
+//         break;
+//       case 6:
+//         month = 'June';
+//         break;
+//       case 7:
+//         month = 'July';
+//         break;
+//       case 8:
+//         month = 'August';
+//         break;
+//       case 9:
+//         month = 'September';
+//         break;
+//       case 10:
+//         month = 'October';
+//         break;
+//       case 11:
+//         month = 'November';
+//         break;
+//       case 12:
+//         month = 'December';
+//         break;
+//       default:
+//         month = '';
+//     }
+
+//     String day = currDate.day.toString();
+//     String year = currDate.year.toString();
+//     String hour = currDate.hour.toString().padLeft(2, '0');
+//     String minute = currDate.minute.toString().padLeft(2, '0');
+
+//     return '$month $day, $year, $hour:$minute';
+//   }
+
+//   Future<void> updateReminders() async {
+//     for (int i = 0; i < reminders.length; i++) {
+//       if (taskCompletionStatus[i]) {
+//         String reminderName = reminders[i]['reminderName'];
+//         // Update reminder completion status in the database
+//         await db.updateCompletedReminder(reminderName);
+//       }
+//     }
+//     // Reload reminders after updating completion status
+//     await loadReminders();
+//   }
+// }
+
 class AddTask extends StatefulWidget {
   const AddTask({Key? key}) : super(key: key);
 
@@ -601,19 +1317,253 @@ class CreateAddTaskState extends State<AddTask> {
     bool uniqueTaskName =
         await db.checkIfTaskNameExists(taskNameController.text);
 
-    bool timeIsValid = RegExp("^([1-9]|1[0-2]):[0-5][0-9] [AP]M")
-        .hasMatch(dateCompByController.text);
-
-    bool tasknameLen = taskNameController.text.length < 20;
+    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] [AP]M")
+        .hasMatch(timeCompyByController.text);
 
     setState(() {
       isTaskBtnEnabled = uniqueTaskName;
       if (!uniqueTaskName) {
         helpText = "A task with that name already exists";
-      } else if (!tasknameLen) {
-        helpText = "Please enter a shorter task name";
-      } else if (!timeIsValid) {
-        helpText = "Please enter a valid time in 12:00 AM/PM format";
+      } else {
+        helpText = "";
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 40,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pop(); // Pop the current route when the back button is pressed
+          },
+        ),
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/Untitled-1.png'),
+                opacity: .5,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              width: 347, // Adjust according to your design
+              height: 720, // Adjust according to your design
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(47)),
+
+              child: Center(
+                  child: Column(
+                children: <Widget>[
+                  Container(
+                      width: 347,
+                      height: 91,
+                      decoration: BoxDecoration(
+                        color: const Color(0xff8491d9),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12)),
+                      ),
+                      child: Center(
+                          child: Text("Create Task",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: const Color(0xffffffff),
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: "OpenSans",
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 20.0)))),
+                  // task name box
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    height: 34,
+                    width: 296,
+                    child: TextFormField(
+                      controller: taskNameController,
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      //controller: ageController,
+                      decoration: InputDecoration(
+                        hintText: "Task Name",
+                        hintStyle: TextStyle(
+                            color: const Color(0xff8491d9),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "Inter",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 16.0),
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+                  // const Text("Date"),
+                  // date comple
+                  TableCalendar(
+                    locale: "en-US",
+                    rowHeight: 43,
+                    headerStyle: const HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                        titleTextStyle: TextStyle(
+                            color: const Color(0xffffffff),
+                            fontWeight: FontWeight.normal,
+                            fontFamily: "OpenSans",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 20.0),
+                        decoration:
+                            BoxDecoration(color: const Color(0xff8491d9))),
+                    availableGestures: AvailableGestures.all,
+                    selectedDayPredicate: (day) => isSameDay(day, today),
+                    focusedDay: today,
+                    firstDay: DateTime.utc(2010, 10, 16),
+                    lastDay: DateTime.utc(2030, 3, 14),
+                    onDaySelected: _onDaySelected,
+                  ),
+                  const SizedBox(height: 30),
+
+                  SizedBox(
+                    height: 34,
+                    width: 296,
+                    child: TextFormField(
+                      controller: timeCompyByController,
+                      textAlignVertical: TextAlignVertical.center,
+                      textAlign: TextAlign.center,
+                      showCursor: false,
+                      //controller: ageController,
+                      decoration: InputDecoration(
+                        hintText: "Time Due",
+                        hintStyle: TextStyle(
+                            color: const Color(0xff8491d9),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "Inter",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 16.0),
+                        filled: true,
+                        fillColor: Color(0x408491d9),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        isDense: true, // Added this
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+                  Text(
+                    helpText,
+                    style: const TextStyle(
+                        fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
+                  ),
+
+                  const SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: isTaskBtnEnabled ? createTask : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isTaskBtnEnabled
+                          ? const Color.fromARGB(255, 192, 129, 226)
+                          : Colors.grey[400],
+                    ),
+                    child: Text("Add Task"),
+                  ),
+                ],
+              )),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void createTask() async {
+    String taskName = taskNameController.text;
+    String dateCompBy = dateCompByController.text;
+
+    db.Reminder r = db.Reminder(
+        username: gUsername,
+        reminderName: taskName,
+        dateSet: TimeOfDay.now().toString(),
+        dateCompletedBy: dateCompBy,
+        isCompleted: 0);
+
+    //print(r.toString());
+
+    db.insertReminder(r);
+    Navigator.pop(context, true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+  }
+}
+
+/*
+class CreateAddTaskState extends State<AddTask> {
+  DateTime today = DateTime.now();
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
+
+  final taskNameController = TextEditingController();
+  final dateSetController = TextEditingController();
+  final dateCompByController = TextEditingController();
+  String helpText = "";
+  bool isTaskBtnEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    taskNameController.addListener(_checkInput);
+    dateSetController.addListener(_checkInput);
+    dateCompByController.addListener(_checkInput);
+  }
+
+  @override
+  void dispose() {
+    taskNameController.dispose();
+    dateSetController.dispose();
+    dateCompByController.dispose();
+    super.dispose();
+  }
+
+  void _checkInput() async {
+    bool uniqueTaskName =
+        await db.checkIfTaskNameExists(taskNameController.text);
+
+    setState(() {
+      isTaskBtnEnabled = uniqueTaskName;
+      if (!uniqueTaskName) {
+        helpText = "A task with that name already exists";
       } else {
         helpText = "";
       }
@@ -627,60 +1577,18 @@ class CreateAddTaskState extends State<AddTask> {
         title: const Text('Create Task'),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            // task name box
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: taskNameController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.notification_important_rounded),
-                hintText: 'Please enter a name for the task',
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text("Please select a date to complete the task by"),
-            // date comple
-            TableCalendar(
-              locale: "en-US",
-              rowHeight: 43,
-              headerStyle: const HeaderStyle(
-                  formatButtonVisible: false, titleCentered: true),
-              availableGestures: AvailableGestures.all,
-              selectedDayPredicate: (day) => isSameDay(day, today),
-              focusedDay: today,
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              onDaySelected: _onDaySelected,
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: dateCompByController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.timer_outlined),
-                hintText: "Please input a time",
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              helpText,
-              style: const TextStyle(
-                  fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
-            ),
-
-            const SizedBox(height: 60),
-            ElevatedButton(
-              onPressed: isTaskBtnEnabled ? createTask : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isTaskBtnEnabled
-                    ? const Color.fromARGB(255, 192, 129, 226)
-                    : Colors.grey[400],
-              ),
-              child: Text(today.toString()),
-            ),
-          ],
-        ),
-      ),
+          child: TableCalendar(
+        locale: "en-US",
+        rowHeight: 43,
+        headerStyle:
+            const HeaderStyle(formatButtonVisible: false, titleCentered: true),
+        availableGestures: AvailableGestures.all,
+        selectedDayPredicate: (day) => isSameDay(day, today),
+        focusedDay: today,
+        firstDay: DateTime.utc(2010, 10, 16),
+        lastDay: DateTime.utc(2030, 3, 14),
+        onDaySelected: _onDaySelected,
+      )),
     );
   }
 
@@ -689,27 +1597,20 @@ class CreateAddTaskState extends State<AddTask> {
     String dateCompBy = dateCompByController.text;
 
     db.Reminder r = db.Reminder(
-        username: gUsername,
-        reminderName: taskName,
-        dateSet: TimeOfDay.now().toString(), // TODO make this format better
-        dateCompletedBy: today.month.toString() +
-            " / " +
-            today.day.toString() +
-            "\n" +
-            dateCompBy,
-        isCompleted: 0);
+      username: gUsername,
+      reminderName: taskName,
+      dateSet: TimeOfDay.now().toString(),
+      dateCompletedBy: dateCompBy,
+    );
 
     //print(r.toString());
 
     db.insertReminder(r);
-    Navigator.pop(context, true);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => TaskHome()),
-    );
+
+    Navigator.pop(context);
   }
 }
-
+*/
 class CompletedTasks extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
   const CompletedTasks({Key? key});
@@ -718,7 +1619,14 @@ class CompletedTasks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('To Do!'),
+        toolbarHeight: 40,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pop(); // Pop the current route when the back button is pressed
+          },
+        ),
       ),
       body: FutureBuilder<List<DataRow>>(
         future: getTasksAsDataRows(),
@@ -791,32 +1699,62 @@ class RewardsHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rewards'),
+        toolbarHeight: 40,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pop(); // Pop the current route when the back button is pressed
+          },
+        ),
       ),
-      body: Center(
-          child: Column(
-        children: <Widget>[
-          const SizedBox(height: 20),
-          const Image(
-            image: AssetImage('images/game.png'),
-            height: 130,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/Untitled-1.png'),
+                opacity: .5,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            child: const Text('Play Game'),
-            onPressed: () {},
+          Center(
+            child: Container(
+              width: 347, // Adjust according to your design
+              height: 720, // Adjust according to your design
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(47)),
+
+              child: Center(
+                  child: Column(
+                children: <Widget>[
+                  const SizedBox(height: 20),
+                  const Image(
+                    image: AssetImage('images/game.png'),
+                    height: 130,
+                  ),
+                  const SizedBox(height: 40),
+                  ElevatedButton(
+                    child: const Text('Play Game'),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(height: 60),
+                  const Image(
+                    image: AssetImage('images/character.png'),
+                    height: 130,
+                  ),
+                  ElevatedButton(
+                    child: const Text('Customize Character'),
+                    onPressed: () {},
+                  )
+                ],
+              )),
+            ),
           ),
-          const SizedBox(height: 60),
-          const Image(
-            image: AssetImage('images/character.png'),
-            height: 130,
-          ),
-          ElevatedButton(
-            child: const Text('Customize Character'),
-            onPressed: () {},
-          )
         ],
-      )),
+      ),
     );
   }
 }
