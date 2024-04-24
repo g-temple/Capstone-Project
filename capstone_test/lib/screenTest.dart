@@ -27,7 +27,6 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 40,
-
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -525,7 +524,7 @@ class LogInState extends State<LogIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-     toolbarHeight: 40,
+        toolbarHeight: 40,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -752,7 +751,7 @@ class HomePageState extends State<HomePage> {
                                   BorderRadius.all(Radius.circular(12)),
                               color: const Color(0xffabb5ef)),
                           child: Text(
-                            "Welcome Username",
+                            'Welcome $gUsername',
                             style: TextStyle(
                                 color: const Color(0xffffffff),
                                 fontWeight: FontWeight.w700,
@@ -836,7 +835,7 @@ class HomePageState extends State<HomePage> {
                                               ['reminderName'] ??
                                           'N/A')),
                                       DataCell(Text(reminders[index]
-                                              ['dateCompletedBy'] ??
+                                              ['dateCompBy'] ??
                                           'N/A')),
                                       DataCell(
                                         Checkbox(
@@ -1317,13 +1316,15 @@ class CreateAddTaskState extends State<AddTask> {
     bool uniqueTaskName =
         await db.checkIfTaskNameExists(taskNameController.text);
 
-    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] [AP]M")
+    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] [A|a|P|p]M|m")
         .hasMatch(timeCompyByController.text);
 
     setState(() {
-      isTaskBtnEnabled = uniqueTaskName;
+      isTaskBtnEnabled = uniqueTaskName && timeIsValid;
       if (!uniqueTaskName) {
         helpText = "A task with that name already exists";
+      } else if (!timeIsValid) {
+        helpText = "Please enter time in the 00:00 AM/PM format";
       } else {
         helpText = "";
       }
@@ -1505,13 +1506,17 @@ class CreateAddTaskState extends State<AddTask> {
 
   void createTask() async {
     String taskName = taskNameController.text;
-    String dateCompBy = dateCompByController.text;
+    String dateCompBy = timeCompyByController.text;
 
     db.Reminder r = db.Reminder(
         username: gUsername,
         reminderName: taskName,
         dateSet: TimeOfDay.now().toString(),
-        dateCompletedBy: dateCompBy,
+        dateCompletedBy: today.month.toString() +
+            "/" +
+            today.day.toString() +
+            "\n" +
+            dateCompBy,
         isCompleted: 0);
 
     //print(r.toString());
@@ -1682,7 +1687,7 @@ class CompletedTasks extends StatelessWidget {
       tasksToDisplay.add(DataRow(
         cells: [
           DataCell(Text(reminder['reminderName'])),
-          DataCell(Text(reminder['dateSet'])),
+          DataCell(Text(reminder['dateCompBy'])),
           DataCell(Text(reminder['dateCompBy'])),
         ],
       ));
