@@ -711,10 +711,41 @@ class HomePageState extends State<HomePage> {
         appBar: AppBar(
           toolbarHeight: 40,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context)
-                  .pop(); // Pop the current route when the back button is pressed
+            icon: Icon(Icons.account_circle),
+            iconSize: 30,
+            color: Colors.indigo.shade400,
+            onPressed: () async {
+              // Show a confirmation dialog
+              bool exitConfirmed = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Log Out?'),
+                    content: Text('Are you sure you want to log out?'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(
+                              false); // Return false when cancel button is pressed
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(
+                              true); // Return true when exit button is pressed
+                        },
+                        child: Text('Log Out'),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              // If the user confirms exit, pop the current route
+              if (exitConfirmed == true) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }
             },
           ),
         ),
