@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:capstone_test/game.dart';
 import 'package:capstone_test/db.dart' as db;
 import 'package:table_calendar/table_calendar.dart';
 
@@ -1743,7 +1744,12 @@ class RewardsHome extends StatelessWidget {
                   const SizedBox(height: 40),
                   ElevatedButton(
                     child: const Text('Play Game'),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SnakeGame()),
+                      );
+                    },
                   ),
                   const SizedBox(height: 60),
                   const Image(
