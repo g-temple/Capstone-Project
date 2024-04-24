@@ -1769,10 +1769,10 @@ class RewardsHome extends StatelessWidget {
                 children: <Widget>[
                   const SizedBox(height: 20),
                   const Image(
-                    image: AssetImage('images/game.png'),
-                    height: 130,
+                    image: AssetImage('images/arcade.png'),
+                    height: 150,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     child: const Text('Play Game'),
                     onPressed: () {
