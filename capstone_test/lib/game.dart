@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 
+bool isGameOver = false;
+
 void main() {
   runApp(SnakeGame());
 }
@@ -14,12 +16,13 @@ class SnakeGame extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Snake Game'),
+          title: const Text('Snake Game'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(
-                  context); // Navigate back when the arrow button is pressed
+              if (isGameOver) {
+                Navigator.pop(context);
+              }
             },
           ),
         ),
@@ -35,6 +38,7 @@ class SnakeGameScreen extends StatefulWidget {
 }
 
 class _SnakeGameScreenState extends State<SnakeGameScreen> {
+  late Timer _timer;
   static const int squaresPerRow = 10;
   static const int squaresPerColumn = 13;
   static const int totalSquares = squaresPerRow * squaresPerColumn;
@@ -54,7 +58,26 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
   @override
   void initState() {
     super.initState();
+
+    setState(() {
+      snake.clear();
+      snake = [
+        (totalSquares ~/ 2) + squaresPerRow + (squaresPerRow ~/ 2) - 1,
+        (totalSquares ~/ 2) + squaresPerRow + (squaresPerRow ~/ 2),
+        (totalSquares ~/ 2) + squaresPerRow + (squaresPerRow ~/ 2) + 1
+      ];
+      food = Random().nextInt(totalSquares);
+      direction = 'up';
+    });
+
     startGame();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Cancel the timer when the screen is disposed
+    _timer.cancel();
   }
 
   bool checkGameOver() {
@@ -71,8 +94,9 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
   }
 
   void startGame() {
+    isGameOver = false;
     const duration = Duration(milliseconds: refreshRate);
-    Timer.periodic(duration, (Timer timer) {
+    _timer = Timer.periodic(duration, (Timer timer) {
       updateSnake();
       if (checkGameOver()) {
         timer.cancel();
@@ -83,7 +107,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
           showGameOverDialog();
         } else {
           // If the snake hits the edge, delay showing game over dialog
-          Timer(Duration(milliseconds: gameOverDelayMilliseconds), () {
+          Timer(const Duration(milliseconds: gameOverDelayMilliseconds), () {
             if (checkGameOver()) {
               // Check game over again after the delay
               showGameOverDialog();
@@ -100,15 +124,16 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
   }
 
   void showGameOverDialog() {
+    isGameOver = true;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Game Over'),
+          title: const Text('Game Over'),
           content: Text('Your score: ${snake.length - 3}'),
           actions: <Widget>[
             TextButton(
-              child: Text('Play Again'),
+              child: const Text('Play Again'),
               onPressed: () {
                 setState(() {
                   snake.clear();
@@ -188,7 +213,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Add padding to the top of the GridView
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Expanded(
           child: Listener(
             onPointerDown: (_) => FocusScope.of(context)
@@ -216,13 +241,13 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
                 ),
                 child: GridView.builder(
                   physics:
-                      NeverScrollableScrollPhysics(), // Disable vertical scrolling
-                  padding: EdgeInsets.symmetric(
+                      const NeverScrollableScrollPhysics(), // Disable vertical scrolling
+                  padding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
                       vertical:
                           8.0), // Add padding to the sides of the GridView
                   itemCount: totalSquares,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: squaresPerRow,
                   ),
                   itemBuilder: (BuildContext context, int index) {
@@ -270,7 +295,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
           ),
         ),
         // Arrange the buttons in the desired formation
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -282,33 +307,33 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
                 ),
               ],
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Column(
               children: [
                 ElevatedButton(
                   onPressed: () => changeDirection('up'),
-                  child: Icon(Icons.arrow_upward),
+                  child: const Icon(Icons.arrow_upward),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => changeDirection('down'),
-                  child: Icon(Icons.arrow_downward),
+                  child: const Icon(Icons.arrow_downward),
                 ),
               ],
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Column(
               children: [
                 ElevatedButton(
                   onPressed: () => changeDirection('right'),
-                  child: Icon(Icons.arrow_forward),
+                  child: const Icon(Icons.arrow_forward),
                 ),
               ],
             ),
           ],
         ),
         // Add padding below the buttons to push them higher up
-        SizedBox(height: 70),
+        const SizedBox(height: 70),
       ],
     );
   }

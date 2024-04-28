@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:capstone_test/game.dart';
 import 'package:capstone_test/db.dart' as db;
@@ -8,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 // global variable to reference for creating and updating tasks
 String gUsername = "";
+bool hasCompletedTask = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +31,7 @@ class WelcomePage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('images/Untitled-1.png'),
                 opacity: .5,
@@ -51,12 +49,12 @@ class WelcomePage extends StatelessWidget {
               child: Center(
                   child: Column(
                 children: <Widget>[
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   const Image(
                     image: AssetImage('images/TODO_Logo copy.png'),
                     height: 150,
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   SizedBox(
                     width: 157,
                     height: 41,
@@ -75,7 +73,7 @@ class WelcomePage extends StatelessWidget {
                           )),
                       child: const Text('Create Account',
                           style: TextStyle(
-                              color: const Color(0xffffffff),
+                              color: Color(0xffffffff),
                               fontWeight: FontWeight.w700,
                               fontFamily: "OpenSans",
                               fontStyle: FontStyle.normal,
@@ -83,7 +81,7 @@ class WelcomePage extends StatelessWidget {
                           textAlign: TextAlign.center),
                     ),
                   ),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   SizedBox(
                     width: 157,
                     height: 75,
@@ -104,7 +102,7 @@ class WelcomePage extends StatelessWidget {
                           'Have an Account?\n '
                           'Log In',
                           style: TextStyle(
-                              color: const Color(0xffffffff),
+                              color: Color(0xffffffff),
                               fontWeight: FontWeight.w700,
                               fontFamily: "OpenSans",
                               fontStyle: FontStyle.normal,
@@ -196,7 +194,7 @@ class CreateAccountState extends State<CreateAccount> {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context)
                 .pop(); // Pop the current route when the back button is pressed
@@ -207,7 +205,7 @@ class CreateAccountState extends State<CreateAccount> {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('images/Untitled-1.png'),
                 opacity: .5,
@@ -225,17 +223,17 @@ class CreateAccountState extends State<CreateAccount> {
               child: Center(
                   child: Column(
                 children: <Widget>[
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   const Image(
                     image: AssetImage('images/TODO_Logo copy.png'),
                     height: 150,
                   ),
 
                   // username box
-                  SizedBox(height: 40),
-                  Text("Username",
-                      style: const TextStyle(
-                          color: const Color(0xff000000),
+                  const SizedBox(height: 40),
+                  const Text("Username",
+                      style: TextStyle(
+                          color: Color(0xff000000),
                           fontWeight: FontWeight.w700,
                           fontFamily: "OpenSans",
                           fontStyle: FontStyle.normal,
@@ -248,7 +246,7 @@ class CreateAccountState extends State<CreateAccount> {
                       textAlignVertical: TextAlignVertical.center,
                       textAlign: TextAlign.center,
                       showCursor: false,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: "OpenSans",
                         fontWeight: FontWeight.normal,
                         fontSize: 12.0,
@@ -256,10 +254,10 @@ class CreateAccountState extends State<CreateAccount> {
                       controller: usernameController,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -272,10 +270,10 @@ class CreateAccountState extends State<CreateAccount> {
                   ),
 
                   // password
-                  SizedBox(height: 20),
-                  Text("Password",
-                      style: const TextStyle(
-                          color: const Color(0xff000000),
+                  const SizedBox(height: 20),
+                  const Text("Password",
+                      style: TextStyle(
+                          color: Color(0xff000000),
                           fontWeight: FontWeight.w700,
                           fontFamily: "OpenSans",
                           fontStyle: FontStyle.normal,
@@ -290,17 +288,17 @@ class CreateAccountState extends State<CreateAccount> {
                       textAlign: TextAlign.center,
                       showCursor: false,
                       obscureText: true,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: "OpenSans",
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0),
                       controller: passwordController,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -313,10 +311,10 @@ class CreateAccountState extends State<CreateAccount> {
                   ),
 
                   //confirm password
-                  SizedBox(height: 20),
-                  Text("Confirm Password",
-                      style: const TextStyle(
-                          color: const Color(0xff000000),
+                  const SizedBox(height: 20),
+                  const Text("Confirm Password",
+                      style: TextStyle(
+                          color: Color(0xff000000),
                           fontWeight: FontWeight.w700,
                           fontFamily: "OpenSans",
                           fontStyle: FontStyle.normal,
@@ -330,17 +328,17 @@ class CreateAccountState extends State<CreateAccount> {
                       textAlign: TextAlign.center,
                       showCursor: false,
                       obscureText: true,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: "OpenSans",
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0),
                       controller: pConfirmController,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -353,10 +351,10 @@ class CreateAccountState extends State<CreateAccount> {
                   ),
 
                   //email
-                  SizedBox(height: 20),
-                  Text("Email Address",
-                      style: const TextStyle(
-                          color: const Color(0xff000000),
+                  const SizedBox(height: 20),
+                  const Text("Email Address",
+                      style: TextStyle(
+                          color: Color(0xff000000),
                           fontWeight: FontWeight.w700,
                           fontFamily: "OpenSans",
                           fontStyle: FontStyle.normal,
@@ -369,17 +367,17 @@ class CreateAccountState extends State<CreateAccount> {
                       textAlignVertical: TextAlignVertical.center,
                       textAlign: TextAlign.center,
                       showCursor: false,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: "OpenSans",
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0),
                       controller: emailController,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -392,10 +390,10 @@ class CreateAccountState extends State<CreateAccount> {
                   ),
 
                   //age
-                  SizedBox(height: 20),
-                  Text("Age",
-                      style: const TextStyle(
-                          color: const Color(0xff000000),
+                  const SizedBox(height: 20),
+                  const Text("Age",
+                      style: TextStyle(
+                          color: Color(0xff000000),
                           fontWeight: FontWeight.w700,
                           fontFamily: "OpenSans",
                           fontStyle: FontStyle.normal,
@@ -408,17 +406,17 @@ class CreateAccountState extends State<CreateAccount> {
                       textAlignVertical: TextAlignVertical.center,
                       textAlign: TextAlign.center,
                       showCursor: false,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: "OpenSans",
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0),
                       controller: ageController,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -438,7 +436,7 @@ class CreateAccountState extends State<CreateAccount> {
                   ),
 
 // need to implement a checkbox
-                  SizedBox(height: 60),
+                  const SizedBox(height: 60),
                   ElevatedButton(
                     onPressed: isButtonEnabled
                         ? () {
@@ -453,12 +451,12 @@ class CreateAccountState extends State<CreateAccount> {
                                 .showSnackBar(snackBar);
                           }
                         : null,
-                    child: Text('Create Account'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isButtonEnabled
-                          ? Color(0xff8491d9)
+                          ? const Color(0xff8491d9)
                           : Colors.grey[400],
                     ),
+                    child: const Text('Create Account'),
                   ),
                 ],
               )),
@@ -527,7 +525,7 @@ class LogInState extends State<LogIn> {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context)
                 .pop(); // Pop the current route when the back button is pressed
@@ -538,7 +536,7 @@ class LogInState extends State<LogIn> {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('images/Untitled-1.png'),
                 opacity: .5,
@@ -556,17 +554,17 @@ class LogInState extends State<LogIn> {
               child: Center(
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                     const Image(
                       image: AssetImage('images/TODO_Logo copy.png'),
                       height: 150,
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     //Username
-                    Text("Username",
-                        style: const TextStyle(
-                            color: const Color(0xff000000),
+                    const Text("Username",
+                        style: TextStyle(
+                            color: Color(0xff000000),
                             fontWeight: FontWeight.w700,
                             fontFamily: "OpenSans",
                             fontStyle: FontStyle.normal,
@@ -580,16 +578,16 @@ class LogInState extends State<LogIn> {
                         textAlignVertical: TextAlignVertical.center,
                         textAlign: TextAlign.center,
                         showCursor: false,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: "OpenSans",
                             fontWeight: FontWeight.normal,
                             fontSize: 12.0),
                         //controller: ageController,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Color(0x408491d9),
+                          fillColor: const Color(0x408491d9),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 color: Color(0x408491d9), width: 2.0),
                             borderRadius: BorderRadius.circular(12.0),
                           ),
@@ -602,10 +600,10 @@ class LogInState extends State<LogIn> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
-                    Text("Password",
-                        style: const TextStyle(
-                            color: const Color(0xff000000),
+                    const SizedBox(height: 20),
+                    const Text("Password",
+                        style: TextStyle(
+                            color: Color(0xff000000),
                             fontWeight: FontWeight.w700,
                             fontFamily: "OpenSans",
                             fontStyle: FontStyle.normal,
@@ -624,9 +622,9 @@ class LogInState extends State<LogIn> {
                         //controller: ageController,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Color(0x408491d9),
+                          fillColor: const Color(0x408491d9),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 color: Color(0x408491d9), width: 2.0),
                             borderRadius: BorderRadius.circular(12.0),
                           ),
@@ -639,14 +637,15 @@ class LogInState extends State<LogIn> {
                       ),
                     ),
 
-                    SizedBox(height: 60),
+                    const SizedBox(height: 60),
                     ElevatedButton(
                       onPressed: () {
                         isValid ? logInHelper() : null;
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            isValid ? Color(0xff8491d9) : Colors.grey[400],
+                        backgroundColor: isValid
+                            ? const Color(0xff8491d9)
+                            : Colors.grey[400],
                       ),
                       child: const Text('Log In'),
                     ),
@@ -711,7 +710,7 @@ class HomePageState extends State<HomePage> {
         appBar: AppBar(
           toolbarHeight: 40,
           leading: IconButton(
-            icon: Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle),
             iconSize: 30,
             color: Colors.indigo.shade400,
             onPressed: () async {
@@ -720,22 +719,22 @@ class HomePageState extends State<HomePage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Log Out?'),
-                    content: Text('Are you sure you want to log out?'),
+                    title: const Text('Log Out?'),
+                    content: const Text('Are you sure you want to log out?'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop(
                               false); // Return false when cancel button is pressed
                         },
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop(
                               true); // Return true when exit button is pressed
                         },
-                        child: Text('Log Out'),
+                        child: const Text('Log Out'),
                       ),
                     ],
                   );
@@ -744,6 +743,7 @@ class HomePageState extends State<HomePage> {
 
               // If the user confirms exit, pop the current route
               if (exitConfirmed == true) {
+                // ignore: use_build_context_synchronously
                 Navigator.of(context).popUntil((route) => route.isFirst);
               }
             },
@@ -753,7 +753,7 @@ class HomePageState extends State<HomePage> {
           fit: StackFit.expand,
           children: [
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('images/Untitled-1.png'),
                   opacity: .5,
@@ -778,18 +778,18 @@ class HomePageState extends State<HomePage> {
                           alignment: Alignment.center,
                           width: 314,
                           height: 138,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)),
-                              color: const Color(0xffabb5ef)),
+                              color: Color(0xffabb5ef)),
                           child: Text(
                             'Welcome $gUsername',
-                            style: TextStyle(
-                                color: const Color(0xffffffff),
+                            style: const TextStyle(
+                                color: Color(0xffffffff),
                                 fontWeight: FontWeight.w700,
                                 fontFamily: "Inter",
                                 fontStyle: FontStyle.normal,
-                                fontSize: 12.0),
+                                fontSize: 25.0),
                             textAlign: TextAlign.center,
                           )),
                     ),
@@ -801,21 +801,21 @@ class HomePageState extends State<HomePage> {
                     const SizedBox(height: 40),
                     SizedBox(
                       width: 315,
-                      child: Container(
-                          child: ClipRRect(
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: reminders.isEmpty
-                            ? Center(
+                            ? const Center(
                                 child: Text('No reminders'),
                               )
                             : DataTable(
-                                border: TableBorder(
+                                border: const TableBorder(
                                     horizontalInside: BorderSide(
                                         width: 1,
                                         color: Color(0xfffd7e7e),
                                         style: BorderStyle.solid)),
                                 decoration: BoxDecoration(
-                                  color: Color.fromRGBO(253, 126, 126, 0.19),
+                                  color:
+                                      const Color.fromRGBO(253, 126, 126, 0.19),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 columnSpacing: 10.0,
@@ -853,9 +853,9 @@ class HomePageState extends State<HomePage> {
                                   ),
                                 ],
                                 headingRowColor: MaterialStateColor.resolveWith(
-                                    (states) => Color(0xfffd7e7e)),
-                                headingTextStyle: TextStyle(
-                                    color: const Color(0xffffffff),
+                                    (states) => const Color(0xfffd7e7e)),
+                                headingTextStyle: const TextStyle(
+                                    color: Color(0xffffffff),
                                     fontWeight: FontWeight.w700,
                                     fontFamily: "Inter",
                                     fontStyle: FontStyle.normal,
@@ -884,7 +884,7 @@ class HomePageState extends State<HomePage> {
                                   );
                                 }),
                               ),
-                      )),
+                      ),
                     ),
 
                     // reminders.isEmpty
@@ -967,7 +967,7 @@ class HomePageState extends State<HomePage> {
                     //         }
                     //         ),
                     //       ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       child: const Text('Add Tasks'),
                       onPressed: () {
@@ -979,13 +979,13 @@ class HomePageState extends State<HomePage> {
                         );
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     if (reminders.isNotEmpty)
                       ElevatedButton(
-                        child: const Text('Complete Checked Tasks'),
                         onPressed: updateReminders,
+                        child: const Text('Complete Checked Tasks'),
                       ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // ElevatedButton(
                     //   child: const Text('View Completed Tasks'),
                     //   onPressed: () {
@@ -1009,13 +1009,13 @@ class HomePageState extends State<HomePage> {
                     //   },
                     // ),
 
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                     SizedBox(
                       height: 75,
                       width: 151,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xffabb5ef),
+                          backgroundColor: const Color(0xffabb5ef),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
                                   12)), // Button border radius
@@ -1023,7 +1023,7 @@ class HomePageState extends State<HomePage> {
                         child: const Text(
                           'Rewards',
                           style: TextStyle(
-                              color: const Color(0xffffffff),
+                              color: Color(0xffffffff),
                               fontWeight: FontWeight.w700,
                               fontFamily: "Inter",
                               fontStyle: FontStyle.normal,
@@ -1099,6 +1099,7 @@ class HomePageState extends State<HomePage> {
   }
 
   Future<void> updateReminders() async {
+    hasCompletedTask = true;
     for (int i = 0; i < reminders.length; i++) {
       if (taskCompletionStatus[i]) {
         String reminderName = reminders[i]['reminderName'];
@@ -1348,7 +1349,7 @@ class CreateAddTaskState extends State<AddTask> {
     bool uniqueTaskName =
         await db.checkIfTaskNameExists(taskNameController.text);
 
-    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] [A|a|P|p]M|m")
+    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] (A|a|P|p)M|m")
         .hasMatch(timeCompyByController.text);
 
     setState(() {
@@ -1369,7 +1370,7 @@ class CreateAddTaskState extends State<AddTask> {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context)
                 .pop(); // Pop the current route when the back button is pressed
@@ -1380,7 +1381,7 @@ class CreateAddTaskState extends State<AddTask> {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('images/Untitled-1.png'),
                 opacity: .5,
@@ -1401,17 +1402,17 @@ class CreateAddTaskState extends State<AddTask> {
                   Container(
                       width: 347,
                       height: 91,
-                      decoration: BoxDecoration(
-                        color: const Color(0xff8491d9),
+                      decoration: const BoxDecoration(
+                        color: Color(0xff8491d9),
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(12),
                             topRight: Radius.circular(12)),
                       ),
-                      child: Center(
+                      child: const Center(
                           child: Text("Create Task",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: const Color(0xffffffff),
+                                  color: Color(0xffffffff),
                                   fontWeight: FontWeight.w700,
                                   fontFamily: "OpenSans",
                                   fontStyle: FontStyle.normal,
@@ -1429,17 +1430,17 @@ class CreateAddTaskState extends State<AddTask> {
                       //controller: ageController,
                       decoration: InputDecoration(
                         hintText: "Task Name",
-                        hintStyle: TextStyle(
-                            color: const Color(0xff8491d9),
+                        hintStyle: const TextStyle(
+                            color: Color(0xff8491d9),
                             fontWeight: FontWeight.w400,
                             fontFamily: "Inter",
                             fontStyle: FontStyle.normal,
                             fontSize: 16.0),
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -1461,13 +1462,12 @@ class CreateAddTaskState extends State<AddTask> {
                         formatButtonVisible: false,
                         titleCentered: true,
                         titleTextStyle: TextStyle(
-                            color: const Color(0xffffffff),
+                            color: Color(0xffffffff),
                             fontWeight: FontWeight.normal,
                             fontFamily: "OpenSans",
                             fontStyle: FontStyle.normal,
                             fontSize: 20.0),
-                        decoration:
-                            BoxDecoration(color: const Color(0xff8491d9))),
+                        decoration: BoxDecoration(color: Color(0xff8491d9))),
                     availableGestures: AvailableGestures.all,
                     selectedDayPredicate: (day) => isSameDay(day, today),
                     focusedDay: today,
@@ -1488,17 +1488,17 @@ class CreateAddTaskState extends State<AddTask> {
                       //controller: ageController,
                       decoration: InputDecoration(
                         hintText: "Time Due",
-                        hintStyle: TextStyle(
-                            color: const Color(0xff8491d9),
+                        hintStyle: const TextStyle(
+                            color: Color(0xff8491d9),
                             fontWeight: FontWeight.w400,
                             fontFamily: "Inter",
                             fontStyle: FontStyle.normal,
                             fontSize: 16.0),
                         filled: true,
-                        fillColor: Color(0x408491d9),
+                        fillColor: const Color(0x408491d9),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0x408491d9), width: 2.0),
+                          borderSide: const BorderSide(
+                              color: Color(0x408491d9), width: 2.0),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         border: OutlineInputBorder(
@@ -1525,7 +1525,7 @@ class CreateAddTaskState extends State<AddTask> {
                           ? const Color.fromARGB(255, 192, 129, 226)
                           : Colors.grey[400],
                     ),
-                    child: Text("Add Task"),
+                    child: const Text("Add Task"),
                   ),
                 ],
               )),
@@ -1544,11 +1544,7 @@ class CreateAddTaskState extends State<AddTask> {
         username: gUsername,
         reminderName: taskName,
         dateSet: TimeOfDay.now().toString(),
-        dateCompletedBy: today.month.toString() +
-            "/" +
-            today.day.toString() +
-            "\n" +
-            dateCompBy,
+        dateCompletedBy: "${today.month}/${today.day}\n$dateCompBy",
         isCompleted: 0);
 
     //print(r.toString());
@@ -1557,7 +1553,7 @@ class CreateAddTaskState extends State<AddTask> {
     Navigator.pop(context, true);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 }
@@ -1658,7 +1654,7 @@ class CompletedTasks extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context)
                 .pop(); // Pop the current route when the back button is pressed
@@ -1738,7 +1734,7 @@ class RewardsHome extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context)
                 .pop(); // Pop the current route when the back button is pressed
@@ -1749,7 +1745,7 @@ class RewardsHome extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('images/Untitled-1.png'),
                 opacity: .5,
@@ -1776,10 +1772,32 @@ class RewardsHome extends StatelessWidget {
                   ElevatedButton(
                     child: const Text('Play Game'),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SnakeGame()),
-                      );
+                      if (hasCompletedTask) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SnakeGame()),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Cannot play game'),
+                              content: const Text(
+                                  'You must have completed a task recently to play a game'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(); // Dismiss the dialog
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     },
                   ),
                   const SizedBox(height: 60),
