@@ -1122,11 +1122,9 @@ class CreateAddTaskState extends State<AddTask> {
       print(hoursToAdd);
     }
 
-    bool isInFuture = DateTime.now().year <= today.year &&
-        DateTime.now().month <= today.month &&
-        DateTime.now().day <= today.day &&
-        DateTime.now().hour <= hoursToAdd &&
-        DateTime.now().minute <= minsToAdd;
+    bool isInFuture = isDateTimeInFuture(
+        today.add(Duration(hours: hoursToAdd, minutes: minsToAdd)),
+        DateTime.now());
 
     setState(() {
       isTaskBtnEnabled = uniqueTaskName && timeIsValid && isInFuture;
@@ -1336,6 +1334,46 @@ class CreateAddTaskState extends State<AddTask> {
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
     );
+  }
+
+  bool isDateTimeInFuture(
+      DateTime dateTimeToCheck, DateTime referenceDateTime) {
+    if (dateTimeToCheck.year > referenceDateTime.year) {
+      return true;
+    } else if (dateTimeToCheck.year < referenceDateTime.year) {
+      return false;
+    }
+
+    // Year is equal, check month
+    if (dateTimeToCheck.month > referenceDateTime.month) {
+      return true;
+    } else if (dateTimeToCheck.month < referenceDateTime.month) {
+      return false;
+    }
+
+    // Month is equal, check day
+    if (dateTimeToCheck.day > referenceDateTime.day) {
+      return true;
+    } else if (dateTimeToCheck.day < referenceDateTime.day) {
+      return false;
+    }
+
+    // Day is equal, check hour
+    if (dateTimeToCheck.hour > referenceDateTime.hour) {
+      return true;
+    } else if (dateTimeToCheck.hour < referenceDateTime.hour) {
+      return false;
+    }
+
+    // Hour is equal, check minute
+    if (dateTimeToCheck.minute > referenceDateTime.minute) {
+      return true;
+    } else if (dateTimeToCheck.minute < referenceDateTime.minute) {
+      return false;
+    }
+
+    // At this point, both DateTime objects are equal
+    return false;
   }
 }
 
