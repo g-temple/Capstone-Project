@@ -688,11 +688,9 @@ class HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> reminders =
       []; // Initialize reminders as an empty list
   late List<bool> taskCompletionStatus;
-  List<Map<String, dynamic>> dueDate =
-      [];
-  
+  List<Map<String, dynamic>> dueDate = [];
+
   bool isLoading = true; // Flag to track loading status
-  
 
   @override
   void initState() {
@@ -871,9 +869,8 @@ class HomePageState extends State<HomePage> {
                                       fontSize: 12.0),
                                   rows:
                                       List.generate(reminders.length, (index) {
-                                      
-                                      // String inputDateFormat = 'dd.MM.yyyy';
-                                      // SortList sortList = SortList().sortByDate(reminders.dateCompletedBy, inputDateFormat);
+                                    // String inputDateFormat = 'dd.MM.yyyy';
+                                    // SortList sortList = SortList().sortByDate(reminders.dateCompletedBy, inputDateFormat);
                                     return DataRow(
                                       cells: [
                                         DataCell(

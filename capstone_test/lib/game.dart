@@ -44,6 +44,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
   static const int totalSquares = squaresPerRow * squaresPerColumn;
   static const int refreshRate = 300;
   static const int gameOverDelayMilliseconds = 500;
+  int score = 0;
 
   static List<int> snake = [
     (totalSquares ~/ 2) + squaresPerRow + (squaresPerRow ~/ 2) - 1,
@@ -67,10 +68,15 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
         (totalSquares ~/ 2) + squaresPerRow + (squaresPerRow ~/ 2) + 1
       ];
       food = Random().nextInt(totalSquares);
-      direction = 'up';
+      final List<String> directions = ['up', 'down', 'left', 'right'];
+      final Random random = Random();
+      direction = directions[random.nextInt(directions.length)];
     });
 
-    startGame();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      _showInstructionsDialog();
+    });
+    //startGame();
   }
 
   @override
@@ -78,6 +84,41 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
     super.dispose();
     // Cancel the timer when the screen is disposed
     _timer.cancel();
+  }
+
+  void _showInstructionsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Instructions'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Instructions:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text('- Swipe up, down, left, or right to move the snake.'),
+              Text('- Or use the arrow keys.'),
+              Text('- Eat the red square to grow.'),
+              Text('- Avoid hitting the walls or the snake itself.'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                startGame();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   bool checkGameOver() {
@@ -133,6 +174,14 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
           content: Text('Your score: ${snake.length - 3}'),
           actions: <Widget>[
             TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Go Home'),
+            ),
+            TextButton(
               child: const Text('Play Again'),
               onPressed: () {
                 setState(() {
@@ -149,7 +198,14 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
                         1
                   ];
                   food = Random().nextInt(totalSquares);
-                  direction = 'up';
+                  final List<String> directions = [
+                    'up',
+                    'down',
+                    'left',
+                    'right'
+                  ];
+                  final Random random = Random();
+                  direction = directions[random.nextInt(directions.length)];
                 });
                 Navigator.of(context).pop();
                 startGame();
@@ -195,6 +251,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
       }
       if (snake.first == food) {
         food = Random().nextInt(totalSquares);
+        score++;
       } else {
         snake.removeLast();
       }
@@ -202,9 +259,22 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
   }
 
   void changeDirection(String newDirection) {
-    setState(() {
-      direction = newDirection;
-    });
+    if (direction == 'up' && newDirection == 'down') {
+      return;
+    }
+    if (direction == 'right' && newDirection == 'left') {
+      return;
+    }
+    if (direction == 'left' && newDirection == 'right') {
+      return;
+    }
+    if (direction == 'down' && newDirection == 'up') {
+      return;
+    } else {
+      setState(() {
+        direction = newDirection;
+      });
+    }
   }
 
   @override
@@ -212,8 +282,17 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Score: $score',
+              style: const TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
         // Add padding to the top of the GridView
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
         Expanded(
           child: Listener(
             onPointerDown: (_) => FocusScope.of(context)
@@ -295,7 +374,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
           ),
         ),
         // Arrange the buttons in the desired formation
-        const SizedBox(height: 40),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
