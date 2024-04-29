@@ -187,7 +187,8 @@ class CreateAccountState extends State<CreateAccount> {
       if (!hasText) {
         helpText = "Please enter your information";
       } else if (!strongPass) {
-        helpText = "Please make a stronger password";
+        helpText =
+            "Please make a stronger password\nIt must include 1 uppercase letter, 1 lowercase letter, a number, \n and a special character";
       } else if (!pMatches) {
         helpText = "Passwords must match";
       } else if (!uniqueUsername) {
@@ -439,10 +440,16 @@ class CreateAccountState extends State<CreateAccount> {
                   ),
 
                   const SizedBox(height: 20),
-                  Text(
-                    helpText,
-                    style: const TextStyle(
-                        fontSize: 16, color: Color.fromARGB(255, 255, 0, 0)),
+                  Center(
+                    child: Text(
+                      helpText,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color.fromARGB(255, 255, 0, 0),
+                      ),
+                      textAlign: TextAlign
+                          .center, // Optional: This ensures text alignment is centered within the Text widget.
+                    ),
                   ),
 
 // need to implement a checkbox
@@ -957,35 +964,6 @@ class HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 40),
-                    SizedBox(
-                      height: 75,
-                      width: 151,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffabb5ef),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  12)), // Button border radius
-                        ),
-                        child: const Text(
-                          'Notifications',
-                          style: TextStyle(
-                              color: Color(0xffffffff),
-                              fontWeight: FontWeight.w700,
-                              fontFamily: "Inter",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 12.0),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Notifications()),
-                          );
-                        },
-                      ),
-                    ),
                   ],
                 )),
               ),
@@ -1319,6 +1297,23 @@ class CreateAddTaskState extends State<AddTask> {
     String taskName = taskNameController.text;
     String timeCompBy = timeCompyByController.text;
 
+    int hoursToAdd = int.parse(timeCompyByController.text.split(":")[0]);
+
+    List<String> dateData = timeCompyByController.text.split(":")[1].split(" ");
+    int minsToAdd = int.parse(dateData[0]);
+
+    hoursToAdd += dateData[1].contains(RegExp("(PM|pm)")) ? 12 : 0;
+
+    DateTime notifBy =
+        DateTime(today.year, today.month, today.day, hoursToAdd, minsToAdd);
+
+    notifBy = notifBy.subtract(const Duration(minutes: 1));
+
+    NotificationService().scheduleNotification(
+        title: 'Scheduled Notification',
+        body: 'Finish task $taskName',
+        scheduledNotificationDateTime: notifBy);
+
     db.Reminder r = db.Reminder(
         username: gUsername,
         reminderName: taskName,
@@ -1642,86 +1637,6 @@ class RewardsHome extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class Notifications extends StatelessWidget {
-  const Notifications({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 40,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context)
-                .pop(); // Pop the current route when the back button is pressed
-          },
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            DatePickerTxt(),
-            ScheduleBtn(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DatePickerTxt extends StatefulWidget {
-  const DatePickerTxt({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<DatePickerTxt> createState() => _DatePickerTxtState();
-}
-
-class _DatePickerTxtState extends State<DatePickerTxt> {
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        DatePicker.showDateTimePicker(
-          context,
-          showTitleActions: true,
-          onChanged: (date) => scheduleTime = date,
-          onConfirm: (date) {},
-        );
-      },
-      child: const Text(
-        'Select Date Time',
-        style: TextStyle(color: Colors.blue),
-      ),
-    );
-  }
-}
-
-class ScheduleBtn extends StatelessWidget {
-  const ScheduleBtn({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: const Text('Schedule notifications'),
-      onPressed: () {
-        NotificationService()
-            .showNotification(title: 'ToDo', body: 'You have a task due soon!');
-        debugPrint('Notification Scheduled for $scheduleTime');
-        NotificationService().scheduleNotification(
-            title: 'Scheduled Notification',
-            body: '$scheduleTime',
-            scheduledNotificationDateTime: scheduleTime);
-      },
     );
   }
 }
