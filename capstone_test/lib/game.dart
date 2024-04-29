@@ -73,7 +73,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
       direction = directions[random.nextInt(directions.length)];
     });
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _showInstructionsDialog();
     });
     //startGame();
