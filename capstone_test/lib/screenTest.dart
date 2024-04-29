@@ -1,16 +1,24 @@
-import 'package:flutter/material.dart';
+import 'package:capstone_test/Services/notifi_service.dart';
+import 'package:flutter/material.dart' hide DatePickerTheme;
 import 'package:capstone_test/game.dart';
 import 'package:capstone_test/db.dart' as db;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/rendering.dart';
 import 'package:date_sorting_algorithm/date_sorting_algorithm.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as datatTimePicker;
 
 // global variable to reference for creating and updating tasks
 String gUsername = "";
 bool hasCompletedTask = false;
+DateTime scheduleTime = DateTime.now();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
   await db.DatabaseProvider
       .initializeDatabase(); // i think this initializes the database
   runApp(const MaterialApp(
@@ -948,7 +956,36 @@ class HomePageState extends State<HomePage> {
                           );
                         },
                       ),
-                    )
+                    ),
+                    const SizedBox(height: 40),
+                    SizedBox(
+                      height: 75,
+                      width: 151,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xffabb5ef),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  12)), // Button border radius
+                        ),
+                        child: const Text(
+                          'Notifications',
+                          style: TextStyle(
+                              color: Color(0xffffffff),
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "Inter",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 12.0),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Notifications()),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 )),
               ),
@@ -1567,6 +1604,86 @@ class RewardsHome extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class Notifications extends StatelessWidget {
+  const Notifications({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 40,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pop(); // Pop the current route when the back button is pressed
+          },
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            DatePickerTxt(),
+            ScheduleBtn(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DatePickerTxt extends StatefulWidget {
+  const DatePickerTxt({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<DatePickerTxt> createState() => _DatePickerTxtState();
+}
+
+class _DatePickerTxtState extends State<DatePickerTxt> {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        DatePicker.showDateTimePicker(
+          context,
+          showTitleActions: true,
+          onChanged: (date) => scheduleTime = date,
+          onConfirm: (date) {},
+        );
+      },
+      child: const Text(
+        'Select Date Time',
+        style: TextStyle(color: Colors.blue),
+      ),
+    );
+  }
+}
+
+class ScheduleBtn extends StatelessWidget {
+  const ScheduleBtn({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      child: const Text('Schedule notifications'),
+      onPressed: () {
+        NotificationService()
+            .showNotification(title: 'ToDo', body: 'You have a task due soon!');
+        debugPrint('Notification Scheduled for $scheduleTime');
+        NotificationService().scheduleNotification(
+            title: 'Scheduled Notification',
+            body: '$scheduleTime',
+            scheduledNotificationDateTime: scheduleTime);
+      },
     );
   }
 }
