@@ -197,6 +197,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
                         (squaresPerRow ~/ 2) +
                         1
                   ];
+                  score = 0;
                   food = Random().nextInt(totalSquares);
                   final List<String> directions = [
                     'up',
