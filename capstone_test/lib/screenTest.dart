@@ -1033,6 +1033,7 @@ class AddTask extends StatefulWidget {
 class CreateAddTaskState extends State<AddTask> {
   DateTime today = DateTime.now();
   void _onDaySelected(DateTime day, DateTime focusedDay) {
+    _checkInput();
     setState(() {
       today = day;
     });
@@ -1067,18 +1068,41 @@ class CreateAddTaskState extends State<AddTask> {
     bool uniqueTaskName =
         await db.checkIfTaskNameExists(taskNameController.text);
 
-    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] (A|a|P|p)M|m")
+    bool timeIsValid = RegExp("^(0[1-9]|1[0-2]):[0-5][0-9] (AM|am|PM|pm)")
         .hasMatch(timeCompyByController.text);
 
+    int hoursToAdd = 0;
+    int minsToAdd = 0;
+
+    if (timeIsValid) {
+      hoursToAdd = int.parse(timeCompyByController.text.split(":")[0]);
+
+      List<String> dateData =
+          timeCompyByController.text.split(":")[1].split(" ");
+      minsToAdd = int.parse(dateData[0]);
+
+      hoursToAdd += dateData[1].contains(RegExp("(PM|pm)")) ? 12 : 0;
+      print(hoursToAdd);
+    }
+
+    bool isInFuture = DateTime.now().year <= today.year &&
+        DateTime.now().month <= today.month &&
+        DateTime.now().day <= today.day &&
+        DateTime.now().hour <= hoursToAdd &&
+        DateTime.now().minute <= minsToAdd;
+
     setState(() {
-      isTaskBtnEnabled = uniqueTaskName && timeIsValid;
+      isTaskBtnEnabled = uniqueTaskName && timeIsValid && isInFuture;
       if (!uniqueTaskName) {
         helpText = "A task with that name already exists";
       } else if (!timeIsValid) {
         helpText = "Please enter time in the 00:00 AM/PM format";
+      } else if (!isInFuture) {
+        helpText = "Please enter time in the future";
       } else {
         helpText = "";
       }
+      print(isTaskBtnEnabled);
     });
   }
 
@@ -1258,13 +1282,13 @@ class CreateAddTaskState extends State<AddTask> {
 
   void createTask() async {
     String taskName = taskNameController.text;
-    String dateCompBy = timeCompyByController.text;
+    String timeCompBy = timeCompyByController.text;
 
     db.Reminder r = db.Reminder(
         username: gUsername,
         reminderName: taskName,
-        dateSet: TimeOfDay.now().toString(),
-        dateCompletedBy: "${today.month}/${today.day}\n$dateCompBy",
+        dateSet: DateTime.now().toString(),
+        dateCompletedBy: "${today.month}/${today.day}\n$timeCompBy",
         isCompleted: 0);
 
     //print(r.toString());
