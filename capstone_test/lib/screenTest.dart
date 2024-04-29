@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:capstone_test/game.dart';
 import 'package:capstone_test/db.dart' as db;
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/rendering.dart';
+import 'package:date_sorting_algorithm/date_sorting_algorithm.dart';
 
 // global variable to reference for creating and updating tasks
 String gUsername = "";
@@ -686,7 +688,11 @@ class HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> reminders =
       []; // Initialize reminders as an empty list
   late List<bool> taskCompletionStatus;
+  List<Map<String, dynamic>> dueDate =
+      [];
+  
   bool isLoading = true; // Flag to track loading status
+  
 
   @override
   void initState() {
@@ -801,89 +807,99 @@ class HomePageState extends State<HomePage> {
                     const SizedBox(height: 40),
                     SizedBox(
                       width: 315,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: reminders.isEmpty
-                            ? const Center(
-                                child: Text('No reminders'),
-                              )
-                            : DataTable(
-                                border: const TableBorder(
-                                    horizontalInside: BorderSide(
-                                        width: 1,
-                                        color: Color(0xfffd7e7e),
-                                        style: BorderStyle.solid)),
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromRGBO(253, 126, 126, 0.19),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                columnSpacing: 10.0,
-                                sortAscending: true,
-                                columns: const <DataColumn>[
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'Task',
-                                        // style: TextStyle(
-                                        //     fontStyle: FontStyle.italic),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
+                      child: SingleChildScrollView(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: reminders.isEmpty
+                              ? const Center(
+                                  child: Text('No reminders'),
+                                )
+                              : DataTable(
+                                  border: const TableBorder(
+                                      horizontalInside: BorderSide(
+                                          width: 1,
+                                          color: Color(0xfffd7e7e),
+                                          style: BorderStyle.solid)),
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromRGBO(
+                                        253, 126, 126, 0.19),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'Do By',
-                                        // style: TextStyle(
-                                        //     fontStyle: FontStyle.italic),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'Complete',
-                                        // style: TextStyle(
-                                        //     fontStyle: FontStyle.italic),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                headingRowColor: MaterialStateColor.resolveWith(
-                                    (states) => const Color(0xfffd7e7e)),
-                                headingTextStyle: const TextStyle(
-                                    color: Color(0xffffffff),
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: "Inter",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 12.0),
-                                rows: List.generate(reminders.length, (index) {
-                                  return DataRow(
-                                    cells: [
-                                      DataCell(Text(reminders[index]
-                                              ['reminderName'] ??
-                                          'N/A')),
-                                      DataCell(Text(reminders[index]
-                                              ['dateCompBy'] ??
-                                          'N/A')),
-                                      DataCell(
-                                        Checkbox(
-                                          value: taskCompletionStatus[index],
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              taskCompletionStatus[index] =
-                                                  newValue!;
-                                            });
-                                          },
+                                  columnSpacing: 10.0,
+                                  sortColumnIndex: 2,
+                                  sortAscending: true,
+                                  columns: const <DataColumn>[
+                                    DataColumn(
+                                      label: Expanded(
+                                        child: Text(
+                                          'Task',
+                                          // style: TextStyle(
+                                          //     fontStyle: FontStyle.italic),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                    ],
-                                  );
-                                }),
-                              ),
+                                    ),
+                                    DataColumn(
+                                      label: Expanded(
+                                        child: Text(
+                                          'Do By',
+                                          // style: TextStyle(
+                                          //     fontStyle: FontStyle.italic),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                    DataColumn(
+                                      label: Expanded(
+                                        child: Text(
+                                          'Complete',
+                                          // style: TextStyle(
+                                          //     fontStyle: FontStyle.italic),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  headingRowColor:
+                                      MaterialStateColor.resolveWith(
+                                          (states) => const Color(0xfffd7e7e)),
+                                  headingTextStyle: const TextStyle(
+                                      color: Color(0xffffffff),
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: "Inter",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 12.0),
+                                  rows:
+                                      List.generate(reminders.length, (index) {
+                                      
+                                      // String inputDateFormat = 'dd.MM.yyyy';
+                                      // SortList sortList = SortList().sortByDate(reminders.dateCompletedBy, inputDateFormat);
+                                    return DataRow(
+                                      cells: [
+                                        DataCell(
+                                          Text(reminders[index]
+                                                  ['reminderName'] ??
+                                              'N/A'),
+                                        ),
+                                        DataCell(Text(reminders[index]
+                                                ['dateCompBy'] ??
+                                            'N/A')),
+                                        DataCell(
+                                          Checkbox(
+                                            value: taskCompletionStatus[index],
+                                            onChanged: (newValue) {
+                                              setState(() {
+                                                taskCompletionStatus[index] =
+                                                    newValue!;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                                ),
+                        ),
                       ),
                     ),
 
@@ -1420,9 +1436,10 @@ class CreateAddTaskState extends State<AddTask> {
                   // task name box
                   const SizedBox(height: 30),
                   SizedBox(
-                    height: 34,
+                    height: 60,
                     width: 296,
                     child: TextFormField(
+                      maxLength: 29,
                       controller: taskNameController,
                       textAlignVertical: TextAlignVertical.center,
                       textAlign: TextAlign.center,
@@ -1447,7 +1464,8 @@ class CreateAddTaskState extends State<AddTask> {
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.circular(24),
                         ),
-                        isDense: true, // Added this
+                        isDense: true,
+                        // Added this
                       ),
                     ),
                   ),
@@ -1763,14 +1781,30 @@ class RewardsHome extends StatelessWidget {
               child: Center(
                   child: Column(
                 children: <Widget>[
-                  const SizedBox(height: 20),
-                  const Image(
-                    image: AssetImage('images/arcade.png'),
-                    height: 150,
+                  const SizedBox(height: 70),
+                  ClipRRect(
+                    child: Image(
+                      image: AssetImage('images/SNAKEGame.png'),
+                      height: 450,
+                    ),
+                    borderRadius: BorderRadius.circular(47),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 40),
                   ElevatedButton(
-                    child: const Text('Play Game'),
+                    child: const Text(
+                      'Play Game',
+                      style: TextStyle(
+                          color: Color(0xffffffff),
+                          fontWeight: FontWeight.normal,
+                          fontFamily: "OpenSans",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 20.0),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: hasCompletedTask
+                          ? const Color.fromARGB(255, 192, 129, 226)
+                          : Colors.grey[400],
+                    ),
                     onPressed: () {
                       if (hasCompletedTask) {
                         Navigator.push(
@@ -1801,14 +1835,6 @@ class RewardsHome extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 60),
-                  const Image(
-                    image: AssetImage('images/character.png'),
-                    height: 130,
-                  ),
-                  ElevatedButton(
-                    child: const Text('Customize Character'),
-                    onPressed: () {},
-                  )
                 ],
               )),
             ),

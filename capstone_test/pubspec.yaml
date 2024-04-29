@@ -37,6 +37,7 @@ dependencies:
   sqflite: ^2.3.2
   path: ^1.9.0
   table_calendar: ^3.0.8
+  date_sorting_algorithm: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ flutter:
     - images/TODO_Logo copy.png
     - images/snake.png
     - images/arcade.png
+    - images/SNAKEGame.png
 
 
 
