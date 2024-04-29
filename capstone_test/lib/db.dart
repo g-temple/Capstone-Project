@@ -50,11 +50,12 @@ Future<void> insertReminder(Reminder reminder) async {
 }
 
 Future<List<Map<String, dynamic>>> getRemindersForUser(String username) async {
-  final Database db = await DatabaseProvider.database;
+  final Database db = DatabaseProvider.database;
 
   return await db.query(
     'reminders',
     where: 'username = ? AND isCompleted = 0',
+    orderBy: 'dateCompBy',
     whereArgs: [username],
   );
 }
