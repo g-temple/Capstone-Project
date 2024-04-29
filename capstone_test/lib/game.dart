@@ -16,7 +16,15 @@ class SnakeGame extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Snake Game'),
+          title: Text(
+            'Snake Game',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight:
+                  FontWeight.bold, // Change the color to whatever you prefer
+            ),
+          ),
+          backgroundColor: Colors.deepPurple.shade300,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -283,12 +291,24 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Score: $score',
-              style: const TextStyle(fontSize: 20),
+            Container(
+              padding: EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                    14), // Adjust the value for desired roundness
+                color: Colors.teal,
+              ),
+              child: Text(
+                'Score: $score',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
             ),
           ],
         ),
@@ -316,7 +336,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: Colors.purple,
+                      color: Colors.purple.shade800,
                       width: 3.0), // Add border to the container
                 ),
                 child: GridView.builder(
@@ -375,7 +395,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
           ),
         ),
         // Arrange the buttons in the desired formation
-        const SizedBox(height: 30),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -383,6 +403,9 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () => changeDirection('left'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal, // Change the color here
+                      foregroundColor: Colors.white),
                   child: Icon(Icons.arrow_back),
                 ),
               ],
@@ -392,11 +415,17 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () => changeDirection('up'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal, // Change the color here
+                      foregroundColor: Colors.white),
                   child: const Icon(Icons.arrow_upward),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => changeDirection('down'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal, // Change the color here
+                      foregroundColor: Colors.white),
                   child: const Icon(Icons.arrow_downward),
                 ),
               ],
@@ -406,6 +435,9 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () => changeDirection('right'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal, // Change the color here
+                      foregroundColor: Colors.white),
                   child: const Icon(Icons.arrow_forward),
                 ),
               ],
