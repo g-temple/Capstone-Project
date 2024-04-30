@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
+import 'package:capstone_test/rewards.dart';
+import 'package:capstone_test/screenTest.dart';
 
 bool isGameOver = false;
 
@@ -8,6 +10,7 @@ void main() {
   runApp(SnakeGame());
 }
 
+// Snake Game that user can play. They can play multiple times or go home after they have died in the game
 class SnakeGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

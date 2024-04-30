@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 
+//Database that stores logIn info and task information for each account
 class DatabaseProvider {
   static late Database database;
 
