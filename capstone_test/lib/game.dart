@@ -185,7 +185,7 @@ class _SnakeGameScreenState extends State<SnakeGameScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
               },
               child: const Text('Go Home'),
             ),

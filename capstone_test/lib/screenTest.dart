@@ -1267,7 +1267,7 @@ class CreateAddTaskState extends State<AddTask> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  // const SizedBox(height: 20),
                   Text(
                     helpText,
                     style: const TextStyle(
@@ -1550,6 +1550,7 @@ class RewardsHome extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            hasCompletedTask = false;
             Navigator.of(context)
                 .pop(); // Pop the current route when the back button is pressed
           },
